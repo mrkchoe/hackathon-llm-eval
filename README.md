@@ -27,7 +27,7 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | Model | Conditions | Passes / 24 |
 | --- | --- | ---: |
 | `claude-sonnet-5` | Anthropic Messages API + tools | **24/24** |
-| `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **24/24** |
+| `gpt-6.1-sol` | Responses API, `reasoning.effort=medium` | **24/24** |
 | `grok-4.7` | xAI API (`api.x.ai`) | **19/24** |
 | `gemini-3.5-flash-lite` | Google AI Studio free tier | **19/24** |
 

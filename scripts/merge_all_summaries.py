@@ -139,7 +139,7 @@ def main() -> None:
             "gpt-6.1-sol",
             "live_openai_*/trials.jsonl",
             {
-                "settings": {"api": "responses", "reasoning_effort": "low"},
+                "settings": {"api": "responses", "reasoning_effort": "medium"},
                 "pricing_status": "unknown_do_not_invent",
                 "gross_usd_estimate": None,
             },

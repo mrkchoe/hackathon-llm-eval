@@ -68,10 +68,10 @@ def main() -> None:
         "model_id": MODEL,
         "provider": "openai",
         "status": "measured",
-        "settings": {"api": "responses", "reasoning_effort": "low"},
+        "settings": {"api": "responses", "reasoning_effort": "medium"},
         "run_id": rows[0]["run_id"] if rows else None,
         "note": (
-            "Measured with OpenAI Responses API, reasoning.effort=low. "
+            "Measured with OpenAI Responses API, reasoning.effort=medium. "
             "Chat Completions cannot tool-call gpt-6.1-sol."
         ),
         "task_success_rates": rates,

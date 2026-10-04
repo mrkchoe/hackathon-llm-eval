@@ -381,7 +381,7 @@ def run_openai(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns
         for n in tools
     ]
     usage = {"input_tokens": 0, "output_tokens": 0}
-    reasoning = {"effort": "low"}  # none/minimal unsupported on gpt-6.1-sol
+    reasoning = {"effort": "medium"}
 
     try:
         resp = client.responses.create(
@@ -694,7 +694,7 @@ def main() -> int:
                 "model_id": model,
                 "settings": {
                     "api": "responses",
-                    "reasoning_effort": "low",
+                    "reasoning_effort": "medium",
                 }
                 if args.provider == "openai"
                 else {"temperature": 0},

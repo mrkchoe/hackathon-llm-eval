@@ -59,7 +59,7 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **measured 24/24** (Responses API, `reasoning.effort=low`)  
+- OpenAI `gpt-6.1-sol` — **measured 24/24** (Responses API, `reasoning.effort=medium`)  
 - Anthropic `claude-sonnet-5` — **measured 24/24** (Messages API + tools)  
 - Google `gemini-3.5-flash-lite` — **measured 19/24** (free tier; fails hard T7)  
 - xAI Grok `grok-4.7` — **measured 19/24** (OpenAI-compatible API at `api.x.ai`)  

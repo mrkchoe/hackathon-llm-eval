@@ -163,7 +163,7 @@ def main() -> None:
         "gpt-6.1-sol",
         "openai",
         {
-            "settings": {"api": "responses", "reasoning_effort": "low"},
+            "settings": {"api": "responses", "reasoning_effort": "medium"},
             "run_id": oai[0]["run_id"] if oai else None,
             "gross_usd_estimate": None,
             "pricing_status": "unknown_do_not_invent",

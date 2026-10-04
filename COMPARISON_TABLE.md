@@ -20,14 +20,15 @@ Hard tasks: **T7** (policy + hidden fraud risk) and **T8** (amendment cancellati
 | T8 Amendment cancel | **3/3** | **3/3** | **3/3** | **1/3** |
 | **Total passes / 24** | **24/24** | **24/24** | **19/24** | **19/24** |
 
-Pass-rate tie at the top: Claude mean latency on T7+T8 ≈ **9.8s** vs GPT ≈ **11.0s**.
+GPT settings: Responses API, `reasoning.effort=medium`.  
+Pass-rate tie at the top: Claude mean latency on T7+T8 ≈ **9.8s** vs GPT medium ≈ **11.0s**.
 
 ### Hard-task latency (mean seconds, passes)
 
-| Task | GPT | Claude | Gemini | Grok |
+| Task | GPT (medium) | Claude | Gemini | Grok |
 | --- | ---: | ---: | ---: | ---: |
-| T7 | ~14.8 | ~12.9 | n/a | ~11.5 |
-| T8 | ~7.2 | ~6.7 | ~32.3 | ~10.3 (1 pass) |
+| T7 | ~16.3 | ~12.9 | n/a | ~11.5 |
+| T8 | ~5.6 | ~6.7 | ~32.3 | ~10.3 (1 pass) |
 
 ---
 

@@ -8,61 +8,61 @@
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 6.69
+      "mean_latency_s": 7.64
     },
     "T2": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 7.76
+      "mean_latency_s": 7.91
     },
     "T3": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 14.13
+      "mean_latency_s": 17.03
     },
     "T4": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 7.6
+      "mean_latency_s": 7.38
     },
     "T5": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 10.77
+      "mean_latency_s": 9.57
     },
     "T6": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 3.83
+      "mean_latency_s": 5.93
     },
     "T7": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 14.8
+      "mean_latency_s": 16.33
     },
     "T8": {
       "passes": 3,
       "trials": 3,
       "rate": 1.0,
-      "mean_latency_s": 7.17
+      "mean_latency_s": 5.58
     }
   },
   "total_passes": 24,
   "total_trials": 24,
   "failures": [],
   "token_usage": {
-    "input_tokens": 43802,
-    "output_tokens": 4037
+    "input_tokens": 41871,
+    "output_tokens": 3909
   },
   "settings": {
     "api": "responses",
-    "reasoning_effort": "low"
+    "reasoning_effort": "medium"
   },
   "pricing_status": "unknown_do_not_invent",
   "gross_usd_estimate": null

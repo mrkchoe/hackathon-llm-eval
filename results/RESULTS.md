@@ -11,7 +11,7 @@ Scores use lenient graders on saved traces. Suite is **T1–T8** (24 trials/mode
 | Model | Passes / 24 | T7 | T8 | Notes |
 | --- | ---: | ---: | ---: | --- |
 | `claude-sonnet-5` | **24 / 24** | 3/3 | 3/3 | Fastest on hard tasks (~9.8s mean T7+T8) |
-| `gpt-6.1-sol` | **24 / 24** | 3/3 | 3/3 | Tied on pass rate; ~11.0s mean T7+T8 |
+| `gpt-6.1-sol` | **24 / 24** | 3/3 | 3/3 | `reasoning.effort=medium`; T7 ~16.3s / T8 ~5.6s |
 | `grok-4.7` | **19 / 24** | 3/3 | 1/3 | Misses on T2/T3/T5 + T8 |
 | `gemini-3.5-flash-lite` | **19 / 24** | 0/3 | 3/3 | Free tier; fails T7 |
 
