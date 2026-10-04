@@ -16,7 +16,7 @@ constraints:
     for_tracks: [best_use_of_browserbase]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.browserbase.BrowserbaseClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     credit_offers: []
@@ -33,7 +33,7 @@ constraints:
     for_tracks: [redis_creativity_technical]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.redis_memory.RedisMemoryClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     winner_prizes_not_budget:
@@ -48,7 +48,7 @@ constraints:
     for_tracks: [best_use_of_composio]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.composio.ComposioClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     winner_prizes_not_budget:
@@ -64,7 +64,7 @@ constraints:
     for_tracks: [best_use_of_conversion]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.temporal_workflow.TemporalClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     verification_status: source_paraphrased
@@ -79,7 +79,7 @@ constraints:
     for_tracks: [best_use_of_fetch, uk_fetch_tech]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.agentverse.AgentverseClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     historical_offers:
@@ -99,7 +99,7 @@ constraints:
     for_tracks: [tidb_agentx]
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.tidb.TiDBClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     verification_status: source_paraphrased
@@ -112,7 +112,7 @@ constraints:
     preferred: true
     integration:
       status: unimplemented_live
-      interface: hackeval.sponsor.daytona.DaytonaClient
+      interface: unimplemented
       mock_available: true
       mock_proves_usage: false
     winner_prizes_not_budget:

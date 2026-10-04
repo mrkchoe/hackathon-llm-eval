@@ -65,7 +65,7 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 
 ---
 
-## C. Documented capabilities (not HackEval scores)
+## C. Documented capabilities (not measured scores)
 
 | Capability | gpt-6.1-sol | claude-sonnet-5 | gemini-3.8-flash | grok-4.7 |
 | --- | --- | --- | --- | --- |

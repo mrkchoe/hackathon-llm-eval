@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal multi-trial LLM comparison runner for HackEval tasks T1–T6.
+Minimal multi-trial LLM comparison runner for tasks T1–T6.
 
 Does not fabricate live results. Without API keys, only --reference-check
 (validates fixtures/graders) is available — that is NOT a model comparison.
@@ -473,7 +473,7 @@ def run_reference_check() -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="HackEval minimal comparison runner")
+    p = argparse.ArgumentParser(description="Minimal LLM comparison runner (T1–T6)")
     p.add_argument("--reference-check", action="store_true", help="Validate fixtures/graders only")
     p.add_argument("--provider", choices=["openai", "anthropic", "gemini", "grok"])
     p.add_argument("--model", help="Exact model ID (defaults per provider)")

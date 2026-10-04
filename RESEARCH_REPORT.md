@@ -1,4 +1,4 @@
-# HackEval — evaluation report
+# Evaluation report
 
 **Status:** Gemini free-tier measurements recorded (`gemini-3.5-flash-lite`, **13/18**). Other providers not yet run.  
 **Sources accessed:** 2026-10-03  
@@ -99,7 +99,7 @@ OpenAI / Anthropic / Grok: **not measured**.
 
 ## 6. Documented capabilities (separate from measurement)
 
-Do **not** treat the table below as HackEval scores.
+Do **not** treat the table below as measured evaluation scores.
 
 | Topic | OpenAI `gpt-6.1-sol` | Anthropic `claude-sonnet-5` | Gemini `gemini-3.5-flash-lite` | Grok `grok-4.7` |
 | --- | --- | --- | --- | --- |

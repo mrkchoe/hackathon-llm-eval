@@ -8,7 +8,7 @@
 
 meta:
   accessed_date: "2026-10-03"
-  pilot_label: "HackEval pilot — not an official hackathon benchmark"
+  pilot_label: "Independent pilot — not an official hackathon benchmark"
 
 sources:
   - id: berkeley-ai-hackathon-2026-devpost
