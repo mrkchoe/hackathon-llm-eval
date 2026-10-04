@@ -9,6 +9,7 @@ Usage:
   python scripts/run_comparison.py --reference-check
   python scripts/run_comparison.py --provider openai --model gpt-6.1-sol
   python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
+  python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
 """
 from __future__ import annotations
 
@@ -96,16 +97,20 @@ TASKS = {
 }
 
 # Exact model IDs to compare under shared settings (temperature 0, same tools/prompts).
+# Grok via xAI OpenAI-compatible API (https://api.x.ai/v1); ID checked 2026-10-03.
 DEFAULT_MODELS = {
     "openai": "gpt-6.1-sol",
     "anthropic": "claude-sonnet-5",
-    "gemini": "gemini-3.8-flash",
+    # 3.8-flash hit free-tier 503s; 2.5-flash-lite blocked for new users (2026-10-03).
+    "gemini": "gemini-3.5-flash-lite",
+    "grok": "grok-4.7",
 }
 
 CREDENTIALS = {
     "openai": "OPENAI_API_KEY",
     "anthropic": "ANTHROPIC_API_KEY",
     "gemini": "GOOGLE_API_KEY",
+    "grok": "XAI_API_KEY",
 }
 
 
@@ -212,10 +217,24 @@ def _parse_json_object(text: str) -> dict:
         return {"raw_text": text}
 
 
-def run_openai(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
+def run_openai_compatible(
+    model: str,
+    prompt: str,
+    tools: list[str],
+    sb: Sandbox,
+    *,
+    api_key: str | None = None,
+    base_url: str | None = None,
+    max_turns: int = 10,
+) -> dict:
     from openai import OpenAI
 
-    client = OpenAI()
+    kwargs: dict = {}
+    if api_key:
+        kwargs["api_key"] = api_key
+    if base_url:
+        kwargs["base_url"] = base_url
+    client = OpenAI(**kwargs)
     tool_defs = [
         {
             "type": "function",
@@ -277,6 +296,26 @@ def run_openai(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns
             continue
         return {"output": _parse_json_object(msg.content or ""), "usage": usage, "error": None}
     return {"output": {}, "usage": usage, "error": "max_turns"}
+
+
+def run_openai(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
+    return run_openai_compatible(model, prompt, tools, sb, max_turns=max_turns)
+
+
+def run_grok(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
+    """xAI Grok — OpenAI-compatible Chat Completions at api.x.ai."""
+    key = os.environ.get("XAI_API_KEY")
+    if not key:
+        return {"output": {}, "usage": {}, "error": "XAI_API_KEY missing"}
+    return run_openai_compatible(
+        model,
+        prompt,
+        tools,
+        sb,
+        api_key=key,
+        base_url="https://api.x.ai/v1",
+        max_turns=max_turns,
+    )
 
 
 def run_anthropic(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
@@ -341,14 +380,32 @@ def run_gemini(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns
         for n in tools
     ]
     for _ in range(max_turns):
-        resp = client.models.generate_content(
-            model=model,
-            contents=transcript + "\nWhen finished, return JSON only.",
-            config=types.GenerateContentConfig(
-                temperature=0,
-                tools=[types.Tool(function_declarations=decls)],
-            ),
-        )
+        resp = None
+        last_err = None
+        for attempt in range(6):
+            try:
+                resp = client.models.generate_content(
+                    model=model,
+                    contents=transcript + "\nWhen finished, return JSON only.",
+                    config=types.GenerateContentConfig(
+                        temperature=0,
+                        tools=[types.Tool(function_declarations=decls)],
+                    ),
+                )
+                last_err = None
+                break
+            except Exception as exc:  # noqa: BLE001
+                msg = str(exc)
+                last_err = msg
+                if "429" in msg or "RESOURCE_EXHAUSTED" in msg:
+                    # Free tier is ~15 RPM; wait and retry.
+                    wait = 40 + attempt * 10
+                    print(f"    rate-limited; sleeping {wait}s (attempt {attempt+1}/6)")
+                    time.sleep(wait)
+                    continue
+                return {"output": {}, "usage": usage, "error": msg}
+        if last_err:
+            return {"output": {}, "usage": usage, "error": last_err}
         um = getattr(resp, "usage_metadata", None)
         if um:
             usage["input_tokens"] += getattr(um, "prompt_token_count", 0) or 0
@@ -363,6 +420,8 @@ def run_gemini(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns
             for fc in fcalls:
                 result = sb.call(fc.name, dict(fc.args or {}))
                 transcript += f"\nTOOL {fc.name} => {json.dumps(result)}"
+            # Small pace between tool-loop turns on free tier
+            time.sleep(5)
             continue
         text = getattr(resp, "text", None) or ""
         return {"output": _parse_json_object(text), "usage": usage, "error": None}
@@ -374,6 +433,8 @@ def estimate_cost(provider: str, model: str, usage: dict) -> dict:
     rates = {
         ("anthropic", "claude-sonnet-5"): (2.0, 10.0),
         ("anthropic", "claude-haiku-4-5-20251001"): (1.0, 5.0),
+        # xAI docs 2026-10-03: grok-4.7 $2 / $6 per MTok in/out
+        ("grok", "grok-4.7"): (2.0, 6.0),
     }
     pair = rates.get((provider, model))
     if not pair:
@@ -414,10 +475,16 @@ def run_reference_check() -> int:
 def main() -> int:
     p = argparse.ArgumentParser(description="HackEval minimal comparison runner")
     p.add_argument("--reference-check", action="store_true", help="Validate fixtures/graders only")
-    p.add_argument("--provider", choices=["openai", "anthropic", "gemini"])
+    p.add_argument("--provider", choices=["openai", "anthropic", "gemini", "grok"])
     p.add_argument("--model", help="Exact model ID (defaults per provider)")
     p.add_argument("--trials", type=int, default=3)
     p.add_argument("--tasks", nargs="*", default=list(TASKS.keys()))
+    p.add_argument(
+        "--pace-seconds",
+        type=float,
+        default=0,
+        help="Sleep between trials (use ~20 on Gemini free tier to stay under 15 RPM).",
+    )
     args = p.parse_args()
 
     if args.reference_check:
@@ -441,7 +508,12 @@ def main() -> int:
     out_dir = ROOT / "outputs" / run_id
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    runners = {"openai": run_openai, "anthropic": run_anthropic, "gemini": run_gemini}
+    runners = {
+        "openai": run_openai,
+        "anthropic": run_anthropic,
+        "gemini": run_gemini,
+        "grok": run_grok,
+    }
     runner = runners[args.provider]
 
     records = []
@@ -497,6 +569,8 @@ def main() -> int:
             records.append(rec)
             flag = "PASS" if rec["success"] else "FAIL"
             print(f"  {task_id} trial {trial}: {flag} {elapsed:.2f}s failure={failure}")
+            if args.pace_seconds > 0:
+                time.sleep(args.pace_seconds)
 
     jsonl = out_dir / "trials.jsonl"
     with jsonl.open("w", encoding="utf-8") as f:

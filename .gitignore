@@ -4,8 +4,10 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 .mypy_cache/
+# Raw local traces (may be large). Published summaries live in results/.
 outputs/*
 !outputs/README.md
+!results/
 .DS_Store
 Thumbs.db
 *.egg-info/

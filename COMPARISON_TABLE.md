@@ -1,9 +1,9 @@
 # Comparison tables
 
-**Measured performance:** not run yet — cells say `—`.  
-**Do not** fill these with reference-check or guessed numbers.
+**Measured so far:** Gemini free-tier only (`gemini-3.5-flash-lite`). Other models still `—`.  
+Source: `outputs/merged_gemini_3.5_flash_lite_summary.json` (merged paced free-tier runs).
 
-After live runs, replace `—` using `outputs/<run_id>/summary.json` (passes / 3 trials).
+`gemini-3.8-flash` was attempted but returned 503 high-demand on free tier; evaluation used `gemini-3.5-flash-lite`.
 
 ---
 
@@ -11,21 +11,26 @@ After live runs, replace `—` using `outputs/<run_id>/summary.json` (passes / 3
 
 Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted extras off.
 
-| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.8-flash` |
-| --- | ---: | ---: | ---: |
-| T1 Web product research | — | — | — |
-| T2 Persistent memory | — | — | — |
-| T3 Ticket + calendar | — | — | — |
-| T4 Durable workflow | — | — | — |
-| T5 Agent discovery | — | — | — |
-| T6 Visual catalog match | — | — | — |
-| **Total passes / 18** | — | — | — |
+| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
+| --- | ---: | ---: | ---: | ---: |
+| T1 Web product research | — | — | **2/3** | — |
+| T2 Persistent memory | — | — | **3/3** | — |
+| T3 Ticket + calendar | — | — | **3/3** | — |
+| T4 Durable workflow | — | — | **2/3** | — |
+| T5 Agent discovery | — | — | **0/3** | — |
+| T6 Visual catalog match | — | — | **3/3** | — |
+| **Total passes / 18** | — | — | **13/18** | — |
 
-### Latency (mean seconds over attempts that were not coverage-exclusions)
+### Latency (mean seconds; successful trials where available)
 
-| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.8-flash` |
-| --- | ---: | ---: | ---: |
-| T1–T6 (per-task rows to fill from JSONL) | — | — | — |
+| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
+| --- | ---: | ---: | ---: | ---: |
+| T1 | — | — | ~31s (2 passes) | — |
+| T2 | — | — | ~32s | — |
+| T3 | — | — | ~49s | — |
+| T4 | — | — | ~49s (2 passes) | — |
+| T5 | — | — | n/a (0 passes) | — |
+| T6 | — | — | ~6.4s | — |
 
 ### Cost (gross USD estimate; null if rates unknown)
 
@@ -33,17 +38,18 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 | --- | --- | ---: |
 | `gpt-6.1-sol` | unknown at pin time — leave null until verified | — |
 | `claude-sonnet-5` | documented estimate ($2 / $10 per MTok in/out, docs 2026-10-03) | — |
-| `gemini-3.8-flash` | unknown at pin time — leave null until verified | — |
+| `gemini-3.5-flash-lite` | free-tier run; dollar rate not invoiced here | **$0 out-of-pocket** (free tier; RPM-limited) |
+| `grok-4.7` | documented estimate ($2 / $6 per MTok in/out, xAI docs 2026-10-03) | — |
 
 ### Failure classes observed (counts)
 
-| Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.8-flash |
-| --- | ---: | ---: | ---: |
-| incorrect_output | — | — | — |
-| provider_error | — | — | — |
-| rate_limit | — | — | — |
-| timeout / max_turns | — | — | — |
-| unsupported_capability | — | — | — |
+| Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.5-flash-lite | grok-4.7 |
+| --- | ---: | ---: | ---: | ---: |
+| incorrect_output | — | — | 1 (T5) | — |
+| provider_error | — | — | 0 (after pacing) | — |
+| rate_limit | — | — | hit early unpaced run (15 RPM free tier); later paced | — |
+| timeout / max_turns | — | — | several (T1/T4/T5) | — |
+| unsupported_capability | — | — | 0 | — |
 
 ---
 
@@ -61,12 +67,12 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 
 ## C. Documented capabilities (not HackEval scores)
 
-| Capability | gpt-6.1-sol | claude-sonnet-5 | gemini-3.8-flash |
-| --- | --- | --- | --- |
-| Tool calling | Documented | Documented | Documented |
-| Multimodal input | Documented (family) | Documented | Documented |
-| Long-context | See provider docs | See provider docs | See provider docs |
-| Free/trial access | See OpenAI plan docs | See Anthropic plan docs | See Google AI Studio docs |
+| Capability | gpt-6.1-sol | claude-sonnet-5 | gemini-3.8-flash | grok-4.7 |
+| --- | --- | --- | --- | --- |
+| Tool calling | Documented | Documented | Documented | Documented |
+| Multimodal input | Documented (family) | Documented | Documented | Documented (image input) |
+| Long-context | See provider docs | See provider docs | See provider docs | See xAI docs |
+| Free/trial access | See OpenAI plan docs | See Anthropic plan docs | See Google AI Studio docs | See xAI console |
 
 ---
 
@@ -86,10 +92,12 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 ## How to populate table A
 
 ```bash
-# For each provider after setting the matching API key:
 python scripts/run_comparison.py --provider openai --model gpt-6.1-sol --trials 3
 python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
-python scripts/run_comparison.py --provider gemini --model gemini-3.8-flash --trials 3
+python scripts/run_comparison.py --provider gemini --model gemini-3.5-flash-lite --trials 3 --pace-seconds 20
+python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
 ```
 
 Then copy pass counts from each `outputs/*/summary.json` → table A.
+
+Gemini free-tier note: without `--pace-seconds 20`, multi-turn tool loops exhaust the **15 requests/minute** free quota quickly.

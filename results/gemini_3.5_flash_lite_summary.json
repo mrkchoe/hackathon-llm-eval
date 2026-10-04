@@ -1,0 +1,40 @@
+{
+  "model_id": "gemini-3.5-flash-lite",
+  "provider": "gemini",
+  "tier": "free_tier",
+  "note": "Merged free-tier runs. Free RPM limit is 15 generate_content calls/min; later run used pacing + retries. Measured only \u2014 not fabricated.",
+  "task_success_rates": {
+    "T1": {
+      "passes": 2,
+      "trials": 3,
+      "rate": 0.6666666666666666
+    },
+    "T2": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    },
+    "T3": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    },
+    "T4": {
+      "passes": 2,
+      "trials": 3,
+      "rate": 0.6666666666666666
+    },
+    "T5": {
+      "passes": 0,
+      "trials": 3,
+      "rate": 0.0
+    },
+    "T6": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    }
+  },
+  "total_passes": 13,
+  "total_trials": 18
+}
