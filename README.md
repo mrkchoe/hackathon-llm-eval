@@ -6,7 +6,7 @@ No app. No dashboard. Just tasks, fake tools/data, and a score.
 
 ---
 
-## How it works (plain English)
+## How it works
 
 1. The model gets a short problem (e.g. “book this meeting” or “pay this invoice”).
 2. It can call **tools** (search, write memory, approve a payout, etc.). Those tools hit **local fake data**, not real browsers or banks.
@@ -20,7 +20,7 @@ No app. No dashboard. Just tasks, fake tools/data, and a score.
 
 ## The 9 tasks
 
-| # | Plain English |
+| # | What the model has to do |
 | --- | --- |
 | **T1** | Find the right water bottle in a fake shop (in stock, right size/color, cheap enough) and prove which page it was on. |
 | **T2** | Save a user’s food preference, then recall it later — without mixing up another user’s data. |
