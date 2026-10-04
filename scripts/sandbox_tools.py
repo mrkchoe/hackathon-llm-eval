@@ -52,35 +52,98 @@ def _same_pacific_tz(tz: Any) -> bool:
     }
 
 
+def _unwrap_leaf(value: Any) -> Any:
+    """Unwrap common single-field wrappers models emit, e.g. {'id': 'x'} → 'x'."""
+    if not isinstance(value, dict) or not value:
+        return value
+    if len(value) == 1:
+        k, v = next(iter(value.items()))
+        if k in {"id", "name", "value", "text", "label"} and not isinstance(v, (dict, list)):
+            return v
+    # Prefer known inner keys when present alongside extras
+    for k in ("id", "name", "value", "text"):
+        if k in value and not isinstance(value[k], (dict, list)) and len(value) <= 2:
+            return value[k]
+    return value
+
+
+def _unwrap_tree(value: Any) -> Any:
+    if isinstance(value, dict):
+        # First unwrap children, then leaf
+        inner = {k: _unwrap_tree(v) for k, v in value.items()}
+        return _unwrap_leaf(inner) if not any(isinstance(v, (dict, list)) for v in inner.values()) else {
+            k: _unwrap_leaf(v) if not isinstance(v, (dict, list)) else v for k, v in inner.items()
+        }
+    return value
+
+
 def _normalize_args(name: str, args: dict[str, Any]) -> dict[str, Any]:
     aliases = _ARG_ALIASES.get(name, {})
-    out = dict(args)
+    out = {k: _unwrap_tree(v) for k, v in args.items()}
     for src, dst in aliases.items():
         if src in out and dst not in out:
             out[dst] = out[src]
     # message_agent: fold sibling constraints into message when useful
     if name == "message_agent":
+        out["agent_id"] = _unwrap_leaf(out.get("agent_id"))
         cons = out.get("constraints")
         msg = out.get("message")
+        if isinstance(msg, dict):
+            # flatten {"text": "..."} already handled; also pull nested constraints
+            if isinstance(msg.get("constraints"), dict):
+                msg = {**msg["constraints"], **{k: v for k, v in msg.items() if k != "constraints"}}
+                out["message"] = msg
+            # timezone alias inside message dict
+            if "tz" not in msg and "timezone" in msg:
+                msg = dict(msg)
+                msg["tz"] = msg["timezone"]
+                out["message"] = msg
         if isinstance(cons, dict):
             if isinstance(msg, dict):
                 merged = {**cons, **msg}
                 out["message"] = merged
             elif msg is None or (isinstance(msg, str) and not msg.strip().startswith("{")):
                 out["message"] = cons
-        # ISO / free-text message left as-is for message_agent parser
+    if name == "write_memory":
+        # Accept {"user": "...", "cuisine": "vegetarian"} → key=cuisine, value=vegetarian
+        if out.get("key") is None or out.get("value") is None:
+            extras = {
+                k: v
+                for k, v in out.items()
+                if k not in {"user", "key", "value"} and not isinstance(v, (dict, list))
+            }
+            if len(extras) == 1:
+                k, v = next(iter(extras.items()))
+                out.setdefault("key", k)
+                out.setdefault("value", v)
     if name == "create_calendar_entry":
         start = out.get("start")
-        if out.get("date") is None and isinstance(start, str) and "T" in start:
-            out["date"] = start.split("T", 1)[0]
+        if out.get("date") is None and isinstance(start, str):
+            if "T" in start:
+                out["date"] = start.split("T", 1)[0]
+            else:
+                dm = re.search(r"\b(20\d{2}-\d{2}-\d{2})\b", start)
+                if dm:
+                    out["date"] = dm.group(1)
         for key in ("start", "end"):
             val = out.get(key)
             if isinstance(val, str):
                 m = re.search(r"\b(\d{2}:\d{2})\b", val)
                 if m:
                     out[key] = m.group(1)
+        # actor/title may still be nested after partial unwrap
+        for key in ("actor", "title", "tz", "date"):
+            if key in out:
+                out[key] = _unwrap_leaf(out[key])
+    if name == "create_ticket":
+        if "actor" not in out and "authorized_writer" in out:
+            out["actor"] = _unwrap_leaf(out["authorized_writer"])
+        for key in ("actor", "title", "due", "owner"):
+            if key in out:
+                out[key] = _unwrap_leaf(out[key])
+    if name == "check_status":
+        out["agent_id"] = _unwrap_leaf(out.get("agent_id"))
     return out
-
 
 def _booking_fields(message: Any) -> dict[str, Any]:
     if isinstance(message, dict):

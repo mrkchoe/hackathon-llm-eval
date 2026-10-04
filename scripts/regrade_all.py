@@ -221,11 +221,35 @@ def main() -> None:
     for f in gem_sum["failures"]:
         print(f"  {f['task_id']} t{f['trial']}: {f['class']} {f['failed_checks']}")
 
+    # Grok
+    grok = regrade_rows(latest_full("live_grok_*/trials.jsonl", "grok-4.7"))
+    grok_sum = summarize(
+        grok,
+        "grok-4.7",
+        "grok",
+        {
+            "settings": {"api": "openai_compatible", "base_url": "https://api.x.ai/v1", "temperature": 0},
+            "run_id": grok[0]["run_id"] if grok else None,
+            "pricing_status": "estimate_$2_in_$6_out_per_MTok",
+        },
+    )
+    # Fill cost estimate from token usage if present
+    tin = grok_sum["token_usage"]["input_tokens"]
+    tout = grok_sum["token_usage"]["output_tokens"]
+    grok_sum["gross_usd_estimate"] = round((tin / 1e6) * 2 + (tout / 1e6) * 6, 6)
+    (RESULTS / "grok-4.7_summary.json").write_text(
+        json.dumps(grok_sum, indent=2) + "\n", encoding="utf-8"
+    )
+    print("Grok", f"{grok_sum['total_passes']}/{grok_sum['total_trials']}")
+    for f in grok_sum["failures"]:
+        print(f"  {f['task_id']} t{f['trial']}: {f['class']} {f['failed_checks']}")
+
     # Persist regraded trial overlays for audit
     overlay = {
         "openai": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in oai],
         "anthropic": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in ant],
         "gemini": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in gem],
+        "grok": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in grok],
     }
     (RESULTS / "regrade_overlay.json").write_text(json.dumps(overlay, indent=2) + "\n", encoding="utf-8")
     print("wrote summaries + results/regrade_overlay.json")

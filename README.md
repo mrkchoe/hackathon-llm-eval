@@ -27,7 +27,7 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | `claude-sonnet-5` | Anthropic Messages API + tools | **18/18** |
 | `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **18/18** |
 | `gemini-3.5-flash-lite` | Google AI Studio free tier | **16/18** |
-| `grok-4.7` | — | not run |
+| `grok-4.7` | xAI API (`api.x.ai`) | **15/18** |
 
 Graders accept Pacific tz aliases (`PT` ≈ `America/Los_Angeles`) and common tool-arg shapes; scores are regraded from saved traces.
 
@@ -44,6 +44,17 @@ All tasks **3/3**.
 | T3 Ticket + calendar | 3 | — |
 | T4 Durable workflow | 2 | Trial 1: `max_turns` (approval→execute incomplete) |
 | T5 Agent discovery | 3 | — |
+| T6 Visual catalog match | 3 | — |
+
+### `grok-4.7` by task
+
+| Task | Passes / 3 | Failed trials |
+| --- | ---: | --- |
+| T1 Web product research | 3 | — |
+| T2 Persistent memory | 2 | Trial 3: wrote/recalled junk values |
+| T3 Ticket + calendar | 2 | Trial 2: never created ticket/calendar |
+| T4 Durable workflow | 3 | — |
+| T5 Agent discovery | 2 | Trial 3: no specialist confirm |
 | T6 Visual catalog match | 3 | — |
 
 More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)

@@ -1516,5 +1516,511 @@
         "total": 4
       }
     }
+  ],
+  "grok": [
+    {
+      "task_id": "T1",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "page_url",
+            "pass": true
+          },
+          {
+            "name": "in_stock",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    },
+    {
+      "task_id": "T1",
+      "trial": 2,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "page_url",
+            "pass": true
+          },
+          {
+            "name": "in_stock",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    },
+    {
+      "task_id": "T1",
+      "trial": 3,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "page_url",
+            "pass": true
+          },
+          {
+            "name": "in_stock",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    },
+    {
+      "task_id": "T2",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "write",
+            "pass": true
+          },
+          {
+            "name": "recall",
+            "pass": true
+          },
+          {
+            "name": "isolation",
+            "pass": true
+          }
+        ],
+        "passed": 3,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T2",
+      "trial": 2,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "write",
+            "pass": true
+          },
+          {
+            "name": "recall",
+            "pass": true
+          },
+          {
+            "name": "isolation",
+            "pass": true
+          }
+        ],
+        "passed": 3,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T2",
+      "trial": 3,
+      "success": false,
+      "grade": {
+        "success": false,
+        "checks": [
+          {
+            "name": "write",
+            "pass": false
+          },
+          {
+            "name": "recall",
+            "pass": false
+          },
+          {
+            "name": "isolation",
+            "pass": true
+          }
+        ],
+        "passed": 1,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T3",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "ticket_title",
+            "pass": true
+          },
+          {
+            "name": "ticket_due",
+            "pass": true
+          },
+          {
+            "name": "ticket_owner",
+            "pass": true
+          },
+          {
+            "name": "calendar",
+            "pass": true
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          }
+        ],
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T3",
+      "trial": 2,
+      "success": false,
+      "grade": {
+        "success": false,
+        "checks": [
+          {
+            "name": "ticket_title",
+            "pass": false
+          },
+          {
+            "name": "ticket_due",
+            "pass": false
+          },
+          {
+            "name": "ticket_owner",
+            "pass": false
+          },
+          {
+            "name": "calendar",
+            "pass": false
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          }
+        ],
+        "passed": 1,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T3",
+      "trial": 3,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "ticket_title",
+            "pass": true
+          },
+          {
+            "name": "ticket_due",
+            "pass": true
+          },
+          {
+            "name": "ticket_owner",
+            "pass": true
+          },
+          {
+            "name": "calendar",
+            "pass": true
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          }
+        ],
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T4",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "lookup",
+            "pass": true
+          },
+          {
+            "name": "approval_before_execute",
+            "pass": true
+          },
+          {
+            "name": "action",
+            "pass": true
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          },
+          {
+            "name": "forbidden",
+            "pass": true
+          }
+        ],
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T4",
+      "trial": 2,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "lookup",
+            "pass": true
+          },
+          {
+            "name": "approval_before_execute",
+            "pass": true
+          },
+          {
+            "name": "action",
+            "pass": true
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          },
+          {
+            "name": "forbidden",
+            "pass": true
+          }
+        ],
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T4",
+      "trial": 3,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "lookup",
+            "pass": true
+          },
+          {
+            "name": "approval_before_execute",
+            "pass": true
+          },
+          {
+            "name": "action",
+            "pass": true
+          },
+          {
+            "name": "duplicates",
+            "pass": true
+          },
+          {
+            "name": "forbidden",
+            "pass": true
+          }
+        ],
+        "passed": 5,
+        "total": 5
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "specialist",
+            "pass": true
+          },
+          {
+            "name": "confirmed",
+            "pass": true
+          },
+          {
+            "name": "constraints",
+            "pass": true
+          }
+        ],
+        "passed": 3,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 2,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "specialist",
+            "pass": true
+          },
+          {
+            "name": "confirmed",
+            "pass": true
+          },
+          {
+            "name": "constraints",
+            "pass": true
+          }
+        ],
+        "passed": 3,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 3,
+      "success": false,
+      "grade": {
+        "success": false,
+        "checks": [
+          {
+            "name": "specialist",
+            "pass": false
+          },
+          {
+            "name": "confirmed",
+            "pass": false
+          },
+          {
+            "name": "constraints",
+            "pass": true
+          }
+        ],
+        "passed": 1,
+        "total": 3
+      }
+    },
+    {
+      "task_id": "T6",
+      "trial": 1,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "listing_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "avoid_L3",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    },
+    {
+      "task_id": "T6",
+      "trial": 2,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "listing_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "avoid_L3",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    },
+    {
+      "task_id": "T6",
+      "trial": 3,
+      "success": true,
+      "grade": {
+        "success": true,
+        "checks": [
+          {
+            "name": "product_id",
+            "pass": true
+          },
+          {
+            "name": "listing_id",
+            "pass": true
+          },
+          {
+            "name": "price_usd",
+            "pass": true
+          },
+          {
+            "name": "avoid_L3",
+            "pass": true
+          }
+        ],
+        "passed": 4,
+        "total": 4
+      }
+    }
   ]
 }

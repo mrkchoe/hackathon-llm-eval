@@ -61,13 +61,24 @@ def _grade_t1(out, sb) -> list[dict[str, Any]]:
     ]
 
 
+def _t2_write_args(args: dict[str, Any]) -> tuple[Any, Any, Any]:
+    """Normalize write_memory args, including {user, cuisine: value} shorthand."""
+    user = args.get("user")
+    key = args.get("key")
+    value = args.get("value")
+    if (key is None or value is None) and "cuisine" in args and args.get("cuisine") is not None:
+        key = "cuisine"
+        value = args.get("cuisine")
+    return user, key, value
+
+
 def _grade_t2(out, sb) -> list[dict[str, Any]]:
     wrote = any(
         c["name"] == "write_memory"
-        and c["arguments"].get("user") == "user_a"
-        and c["arguments"].get("key") == "cuisine"
-        and str(c["arguments"].get("value")).lower() == "vegetarian"
         and c.get("error") is None
+        and (lambda u, k, v: u == "user_a" and k == "cuisine" and str(v).lower() == "vegetarian")(
+            *_t2_write_args(c.get("arguments") or {})
+        )
         for c in sb.calls
     )
     cuisine = str(out.get("cuisine") or out.get("final_cuisine") or "").lower()
@@ -198,13 +209,14 @@ def _grade_t5(out, sb) -> list[dict[str, Any]]:
     booked = _sandbox_booking(sb)
     if not _constraints_ok(cons) and booked:
         cons = booked
+    def _agent_ref(args: dict[str, Any]) -> Any:
+        v = args.get("agent_id") or args.get("to") or args.get("recipient") or args.get("id")
+        if isinstance(v, dict):
+            return v.get("id") or v.get("name") or v.get("value")
+        return v
+
     specialist_ok = out.get("specialist") == "agent_scheduler" or any(
-        (c.get("name") == "message_agent")
-        and (
-            (c.get("arguments") or {}).get("agent_id") == "agent_scheduler"
-            or (c.get("arguments") or {}).get("to") == "agent_scheduler"
-            or (c.get("arguments") or {}).get("recipient") == "agent_scheduler"
-        )
+        (c.get("name") == "message_agent") and _agent_ref(c.get("arguments") or {}) == "agent_scheduler"
         for c in sb.calls
     )
     tool_confirmed = any(
