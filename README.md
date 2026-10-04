@@ -24,10 +24,21 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 
 | Model | Conditions | Passes / 18 |
 | --- | --- | ---: |
+| `claude-sonnet-5` | Anthropic Messages API + tools | **16/18** |
 | `gemini-3.5-flash-lite` | Google AI Studio free tier | **13/18** |
 | `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **12/18** |
-| `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
+
+### `claude-sonnet-5` by task
+
+| Task | Passes / 3 | Failed trials |
+| --- | ---: | --- |
+| T1 Web product research | 3 | — |
+| T2 Persistent memory | 3 | — |
+| T3 Ticket + calendar | 3 | — |
+| T4 Durable workflow | 3 | — |
+| T5 Agent discovery | 1 | Trial 1: `confirmed` false; trial 3: `max_turns` |
+| T6 Visual catalog match | 3 | — |
 
 ### `gpt-6.1-sol` by task
 

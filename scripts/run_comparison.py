@@ -393,21 +393,27 @@ def run_anthropic(model: str, prompt: str, tools: list[str], sb: Sandbox, max_tu
         {
             "name": n,
             "description": n,
-            "input_schema": {"type": "object", "additionalProperties": True},
+            "input_schema": {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": True,
+            },
         }
         for n in tools
     ]
     messages: list[dict] = [{"role": "user", "content": prompt}]
     usage = {"input_tokens": 0, "output_tokens": 0}
     for _ in range(max_turns):
-        resp = client.messages.create(
-            model=model,
-            max_tokens=2048,
-            temperature=0,
-            system="Use tools as needed. When done, reply with a single JSON object only.",
-            tools=tool_defs,
-            messages=messages,
-        )
+        try:
+            resp = client.messages.create(
+                model=model,
+                max_tokens=2048,
+                system="Use tools as needed. When done, reply with a single JSON object only.",
+                tools=tool_defs,
+                messages=messages,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return {"output": {}, "usage": usage, "error": str(exc)}
         usage["input_tokens"] += getattr(resp.usage, "input_tokens", 0) or 0
         usage["output_tokens"] += getattr(resp.usage, "output_tokens", 0) or 0
         tool_uses = [b for b in resp.content if getattr(b, "type", None) == "tool_use"]

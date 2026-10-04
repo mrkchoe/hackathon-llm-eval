@@ -1,7 +1,6 @@
 # Comparison tables
 
-**Measured so far:** Gemini free-tier only (`gemini-3.5-flash-lite`). Other models still `—`.  
-Source: `outputs/merged_gemini_3.5_flash_lite_summary.json` (merged paced free-tier runs).
+**Measured so far:** Anthropic `claude-sonnet-5` **16/18**, Gemini free-tier `gemini-3.5-flash-lite` **13/18**, OpenAI `gpt-6.1-sol` **12/18**. Grok still `—`.
 
 `gemini-3.8-flash` was attempted but returned 503 high-demand on free tier; evaluation used `gemini-3.5-flash-lite`.
 
@@ -9,38 +8,38 @@ Source: `outputs/merged_gemini_3.5_flash_lite_summary.json` (merged paced free-t
 
 ## A. Runtime models — measured task success (3 trials each)
 
-Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted extras off.
+Shared conditions: temperature 0 where supported; same prompts/tools/fixtures; provider-hosted extras off.
 
 | Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
 | --- | ---: | ---: | ---: | ---: |
-| T1 Web product research | **3/3** | — | **2/3** | — |
-| T2 Persistent memory | **3/3** | — | **3/3** | — |
-| T3 Ticket + calendar | **0/3** | — | **3/3** | — |
-| T4 Durable workflow | **3/3** | — | **2/3** | — |
-| T5 Agent discovery | **0/3** | — | **0/3** | — |
-| T6 Visual catalog match | **3/3** | — | **3/3** | — |
-| **Total passes / 18** | **12/18** | — | **13/18** | — |
+| T1 Web product research | **3/3** | **3/3** | **2/3** | — |
+| T2 Persistent memory | **3/3** | **3/3** | **3/3** | — |
+| T3 Ticket + calendar | **0/3** | **3/3** | **3/3** | — |
+| T4 Durable workflow | **3/3** | **3/3** | **2/3** | — |
+| T5 Agent discovery | **0/3** | **1/3** | **0/3** | — |
+| T6 Visual catalog match | **3/3** | **3/3** | **3/3** | — |
+| **Total passes / 18** | **12/18** | **16/18** | **13/18** | — |
 
-`gpt-6.1-sol` settings: OpenAI **Responses API**, `reasoning.effort=low` (Chat Completions cannot tool-call this model).
-
+`gpt-6.1-sol` settings: OpenAI **Responses API**, `reasoning.effort=low`.  
+`claude-sonnet-5` settings: Anthropic **Messages API** + tools (no `temperature`; model rejected it).
 
 ### Latency (mean seconds; successful trials where available)
 
 | Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
 | --- | ---: | ---: | ---: | ---: |
-| T1 | ~6.7 | — | ~31 (2 passes) | — |
-| T2 | ~7.8 | — | ~32 | — |
-| T3 | n/a (0 passes) | — | ~49 | — |
-| T4 | ~7.6 | — | ~49 (2 passes) | — |
-| T5 | n/a (0 passes) | — | n/a (0 passes) | — |
-| T6 | ~3.8 | — | ~6.4 | — |
+| T1 | ~6.7 | ~4.5 | ~31 (2 passes) | — |
+| T2 | ~7.8 | ~4.8 | ~32 | — |
+| T3 | n/a (0 passes) | ~8.5 | ~49 | — |
+| T4 | ~7.6 | ~6.3 | ~49 (2 passes) | — |
+| T5 | n/a (0 passes) | ~14.6 (1 pass) | n/a (0 passes) | — |
+| T6 | ~3.8 | ~6.0 | ~6.4 | — |
 
 ### Cost (gross USD estimate; null if rates unknown)
 
 | Model | Pricing status | Sum of trial estimates |
 | --- | --- | ---: |
 | `gpt-6.1-sol` | rates not pinned here; ~24.4k in / 2.9k out tokens recorded | null |
-| `claude-sonnet-5` | documented estimate ($2 / $10 per MTok in/out, docs 2026-10-03) | — |
+| `claude-sonnet-5` | ~106.8k in / 10.9k out; $2 / $10 per MTok in/out | **~$0.32** |
 | `gemini-3.5-flash-lite` | free-tier run; dollar rate not invoiced here | **$0 out-of-pocket** |
 | `grok-4.7` | documented estimate ($2 / $6 per MTok in/out, xAI docs 2026-10-03) | — |
 
@@ -48,11 +47,18 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 
 | Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.5-flash-lite | grok-4.7 |
 | --- | ---: | ---: | ---: | ---: |
-| incorrect_output | 6 (T3×3, T5×3) | — | 1 (T5 t3) | — |
-| provider_error | 0 | — | 0 (after pacing) | — |
-| rate_limit | 0 | — | early unpaced only | — |
-| timeout / max_turns | 0 | — | 4 (T1 t3, T4 t1, T5 t1–t2) | — |
-| unsupported_capability | 0 | — | 0 | — |
+| incorrect_output | 6 (T3×3, T5×3) | 1 (T5 t1) | 1 (T5 t3) | — |
+| provider_error | 0 | 0 | 0 (after pacing) | — |
+| rate_limit | 0 | 0 | early unpaced only | — |
+| timeout / max_turns | 0 | 1 (T5 t3) | 4 (T1 t3, T4 t1, T5 t1–t2) | — |
+| unsupported_capability | 0 | 0 | 0 | — |
+
+### Failed trials (`claude-sonnet-5`)
+
+| Task | Trial | Class | Missed checks |
+| --- | ---: | --- | --- |
+| T5 | 1 | incorrect_output | confirmed |
+| T5 | 3 | max_turns | specialist, confirmed, constraints |
 
 ### Failed trials (`gpt-6.1-sol`)
 
@@ -94,7 +100,7 @@ Full writeup: [`results/RESULTS.md`](results/RESULTS.md)
 | --- | --- | --- | --- | --- |
 | Tool calling | Documented | Documented | Documented | Documented |
 | Multimodal input | Documented (family) | Documented | Documented | Documented (image input) |
-| Long-context | See provider docs | See provider docs | See provider docs | See xAI docs |
+| Long-context | See provider docs | See provider docs | See provider docs | See provider docs |
 | Free/trial access | See OpenAI plan docs | See Anthropic plan docs | See Google AI Studio docs | See xAI console |
 
 ---
