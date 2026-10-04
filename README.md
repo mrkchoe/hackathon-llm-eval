@@ -39,18 +39,20 @@ More detail (prompts + pass rules): [`tasks/`](tasks/).
 
 ## Results
 
-Each model: **10 tasks × 3 trials = 30 attempts**.
+Each model: **10 tasks × 3 trials = 30 attempts** (coverage **T1–T10**).
 
-| Model | Setup | Score |
-| --- | --- | ---: |
-| Claude Sonnet 5 | Anthropic API | **30/30** |
-| GPT 6.1 Sol | OpenAI Responses API, medium reasoning | **30/30** |
-| Gemini 3.5 Flash Lite | Free tier | **22/30** |
-| Grok 4.7 | xAI API | **20/30** |
+| Model | Setup | Score | Tokens (in/out) | Wall time | Est. cost |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Claude Sonnet 5 | Anthropic API | **30/30** | 353,803 / 26,835 | 340.7 s | ~$0.98 |
+| GPT 6.1 Sol | OpenAI Responses API, medium reasoning | **30/30** | 106,666 / 6,049 | 339.7 s | ~$0.27 |
+| Gemini 3.5 Flash Lite | Free tier | **22/30** | 199,321 / 6,784 | 1831.4 s | $0 (free tier) |
+| Grok 4.7 | xAI API | **20/30** | 440,495 / 5,078 | 321.6 s | ~$0.91 |
 
-T10 is the extreme task: Grok and Gemini go **0/3**. Claude and GPT both still **3/3** (pass-rate tie remains; GPT was faster on T10).
+T10: Grok and Gemini go **0/3**. Claude and GPT both still **3/3** (pass-rate tie remains; GPT was faster on T10).
 
-Who missed what: [`results/RESULTS.md`](results/RESULTS.md).
+**Cost caveats:** Claude/GPT USD figures use $2 in / $10 out per MTok; Grok uses $2 / $6. Gemini free-tier run is recorded as **$0** (paid Flash Lite price not applied).
+
+Who missed what, plus timing/cost detail: [`results/RESULTS.md`](results/RESULTS.md).
 
 ---
 
@@ -63,7 +65,7 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-Put API keys in `.env` (never commit that file):
+Put API keys in `.env`:
 
 | Provider | Variable |
 | --- | --- |

@@ -2,7 +2,7 @@
   "model_id": "grok-4.7",
   "provider": "grok",
   "status": "measured",
-  "tasks": "T1-T8",
+  "tasks": "T1-T10",
   "task_success_rates": {
     "T1": {
       "passes": 3,
@@ -237,5 +237,17 @@
     "base_url": "https://api.x.ai/v1"
   },
   "pricing_status": "estimate_$2_in_$6_out_per_MTok",
-  "gross_usd_estimate": 0.911458
+  "gross_usd_estimate": 0.911458,
+  "suite_timing": {
+    "sum_elapsed_s": 321.64,
+    "mean_elapsed_all_s": 10.72,
+    "mean_elapsed_pass_s": 8.87,
+    "note": "Wall-clock seconds from saved traces for the published 30 trials. Per-task mean_latency_s remains pass-only."
+  },
+  "cost_note": "Estimate from published token totals \u00d7 documented xAI rates used in harness ($2/$6 per MTok).",
+  "token_verification": {
+    "status": "verified_against_saved_traces",
+    "input_tokens": 440495,
+    "output_tokens": 5078
+  }
 }

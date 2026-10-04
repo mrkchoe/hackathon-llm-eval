@@ -118,7 +118,7 @@ def summarize(rows: list[dict], model_id: str, provider: str, extra: dict | None
         "model_id": model_id,
         "provider": provider,
         "status": "measured",
-        "tasks": "T1-T8",
+        "tasks": "T1-T10",
         "task_success_rates": rates,
         "total_passes": total_p,
         "total_trials": total_n,
@@ -140,8 +140,7 @@ def main() -> None:
             "live_openai_*/trials.jsonl",
             {
                 "settings": {"api": "responses", "reasoning_effort": "medium"},
-                "pricing_status": "unknown_do_not_invent",
-                "gross_usd_estimate": None,
+                "pricing_status": "estimate_$2_in_$10_out_per_MTok",
             },
             "results/openai_gpt-6.1-sol_summary.json",
         ),
@@ -180,7 +179,7 @@ def main() -> None:
         else:
             rows = base + t7 + t8 + t9 + t10
         summary = summarize(rows, model, provider, extra)
-        if provider == "anthropic":
+        if provider in {"openai", "anthropic"}:
             tin, tout = summary["token_usage"]["input_tokens"], summary["token_usage"]["output_tokens"]
             summary["gross_usd_estimate"] = round((tin / 1e6) * 2 + (tout / 1e6) * 10, 6)
         if provider == "grok":

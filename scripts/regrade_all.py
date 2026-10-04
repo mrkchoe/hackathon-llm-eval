@@ -165,10 +165,12 @@ def main() -> None:
         {
             "settings": {"api": "responses", "reasoning_effort": "medium"},
             "run_id": oai[0]["run_id"] if oai else None,
-            "gross_usd_estimate": None,
-            "pricing_status": "unknown_do_not_invent",
+            "pricing_status": "estimate_$2_in_$10_out_per_MTok",
         },
     )
+    tin = oai_sum["token_usage"]["input_tokens"]
+    tout = oai_sum["token_usage"]["output_tokens"]
+    oai_sum["gross_usd_estimate"] = round((tin / 1e6) * 2 + (tout / 1e6) * 10, 6)
     (RESULTS / "openai_gpt-6.1-sol_summary.json").write_text(
         json.dumps(oai_sum, indent=2) + "\n", encoding="utf-8"
     )

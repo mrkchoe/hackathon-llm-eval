@@ -668,6 +668,8 @@ def run_gemini(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns
 def estimate_cost(provider: str, model: str, usage: dict) -> dict:
     # Partial known rates from docs (2026-10-03). Unknown => null (not zero).
     rates = {
+        # OpenAI docs: gpt-6.1-sol $2 / $10 per MTok in/out (standard, ≤272K input)
+        ("openai", "gpt-6.1-sol"): (2.0, 10.0),
         ("anthropic", "claude-sonnet-5"): (2.0, 10.0),
         ("anthropic", "claude-haiku-4-5-20251001"): (1.0, 5.0),
         # xAI docs 2026-10-03: grok-4.7 $2 / $6 per MTok in/out

@@ -2,7 +2,7 @@
   "model_id": "gemini-3.5-flash-lite",
   "provider": "gemini",
   "status": "measured",
-  "tasks": "T1-T8",
+  "tasks": "T1-T10",
   "task_success_rates": {
     "T1": {
       "passes": 2,
@@ -192,5 +192,18 @@
     "output_tokens": 6784
   },
   "tier": "free_tier",
-  "gross_usd_estimate": 0
+  "gross_usd_estimate": 0,
+  "suite_timing": {
+    "sum_elapsed_s": 1831.38,
+    "mean_elapsed_all_s": 61.05,
+    "mean_elapsed_pass_s": 38.83,
+    "note": "Wall-clock seconds from saved traces for the published 30 trials. Per-task mean_latency_s remains pass-only."
+  },
+  "pricing_status": "free_tier_recorded_as_$0",
+  "cost_note": "Free-tier run recorded as $0 API charge. Paid Flash Lite list price was not applied.",
+  "token_verification": {
+    "status": "verified_against_saved_traces",
+    "input_tokens": 199321,
+    "output_tokens": 6784
+  }
 }

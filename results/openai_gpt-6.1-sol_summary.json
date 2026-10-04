@@ -2,7 +2,7 @@
   "model_id": "gpt-6.1-sol",
   "provider": "openai",
   "status": "measured",
-  "tasks": "T1-T8",
+  "tasks": "T1-T10",
   "task_success_rates": {
     "T1": {
       "passes": 3,
@@ -76,6 +76,18 @@
     "api": "responses",
     "reasoning_effort": "medium"
   },
-  "pricing_status": "unknown_do_not_invent",
-  "gross_usd_estimate": null
+  "pricing_status": "estimate_$2_in_$10_out_per_MTok",
+  "gross_usd_estimate": 0.273822,
+  "suite_timing": {
+    "sum_elapsed_s": 339.72,
+    "mean_elapsed_all_s": 11.32,
+    "mean_elapsed_pass_s": 11.32,
+    "note": "Wall-clock seconds from saved traces for the published 30 trials. Per-task mean_latency_s remains pass-only."
+  },
+  "cost_note": "Estimate from published token totals × OpenAI list rates for gpt-6.1-sol ($2/$10 per MTok standard).",
+  "token_verification": {
+    "status": "verified_against_saved_traces",
+    "input_tokens": 106666,
+    "output_tokens": 6049
+  }
 }

@@ -14,8 +14,8 @@ Two roles are kept separate:
 
 | Role | What it is | How we treat it |
 | --- | --- | --- |
-| **Build-time assistant** | Model helping participants write code (Cursor, Claude Code, Copilot, etc.) | Documented from event tooling; **not** scored in T1–T9 |
-| **Runtime model** | Model that powers the submitted agent/app via API | **What T1–T9 measure** |
+| **Build-time assistant** | Model helping participants write code (Cursor, Claude Code, Copilot, etc.) | Documented from event tooling; **not** scored in T1–T10 |
+| **Runtime model** | Model that powers the submitted agent/app via API | **What T1–T10 measure** |
 
 Winner API-credit prizes are **not** the same as participant build budgets.
 
@@ -86,15 +86,14 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 Suite **T1–T10** (30 trials). See [`results/RESULTS.md`](results/RESULTS.md).
 
-| Model | Total | T10 |
-| --- | ---: | ---: |
-| `claude-sonnet-5` | **30/30** | 3/3 |
-| `gpt-6.1-sol` | **30/30** | 3/3 |
-| `gemini-3.5-flash-lite` | **22/30** | 0/3 |
-| `grok-4.7` | **20/30** | 0/3 |
+| Model | Total | T10 | Tokens in/out | Wall time (sum) | Est. USD |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `claude-sonnet-5` | **30/30** | 3/3 | 353,803 / 26,835 | 340.7 s | ~$0.98 |
+| `gpt-6.1-sol` | **30/30** | 3/3 | 106,666 / 6,049 | 339.7 s | ~$0.27 |
+| `gemini-3.5-flash-lite` | **22/30** | 0/3 | 199,321 / 6,784 | 1831.4 s | $0 (free tier) |
+| `grok-4.7` | **20/30** | 0/3 | 440,495 / 5,078 | 321.6 s | ~$0.91 |
 
-Claude/GPT still tie on pass rate. T10 separates Grok/Gemini.
----
+Claude/GPT still tie on pass rate. T10 separates Grok/Gemini. Token totals verified against saved traces. GPT/Claude cost estimates use $2/$10 per MTok; Gemini free-tier charge recorded as $0.
 
 ## 6. Documented capabilities (separate from measurement)
 
@@ -142,6 +141,7 @@ Copy `.env.example` → `.env`. Without keys, the runner refuses live mode rathe
 - Adaptations ≠ official contest tests.  
 - Participant-reported metrics are unverified.  
 - Sandbox tools ≠ proof of sponsor-stack integration.  
-- Cost estimates incomplete when provider rates are unknown.  
-- Free-tier Gemini RPM shaped that run; other providers used paid API keys.  
-- Lenient grading can credit complete tool bookings even when the final JSON was empty or used equivalent tz labels.
+- Cost estimates use list rates when known (GPT/Claude $2/$10 per MTok; Grok $2/$6). Gemini free tier recorded as $0.  
+- Free-tier Gemini RPM/quota shaped that run (one T10 trial hit daily free-tier quota); other providers used paid API keys.  
+- Lenient grading can credit complete tool bookings even when the final JSON was empty or used equivalent tz labels.  
+- Timing/cost figures above were computed offline from saved traces; evaluations were not re-run for this documentation pass.
