@@ -1,6 +1,7 @@
 """Minimal deterministic sandbox tools for the six evaluation tasks."""
 from __future__ import annotations
 
+import inspect
 import json
 from copy import deepcopy
 from pathlib import Path
@@ -33,7 +34,18 @@ class Sandbox:
             self.calls.append(rec)
             return {"ok": False, "error": "unknown_tool"}
         try:
-            result = fn(**args)
+            sig = inspect.signature(fn)
+            # Drop unexpected kwargs so models can pass extra fields without hard-failing the tool.
+            if any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()):
+                filtered = args
+            else:
+                allowed = {
+                    k
+                    for k, p in sig.parameters.items()
+                    if p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)
+                }
+                filtered = {k: v for k, v in args.items() if k in allowed}
+            result = fn(**filtered)
             self.calls.append({"name": name, "arguments": args, "error": None})
             return {"ok": True, "result": result}
         except PermissionError as exc:

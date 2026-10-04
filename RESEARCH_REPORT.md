@@ -1,6 +1,6 @@
 # Evaluation report
 
-**Status:** Gemini free-tier measurements recorded (`gemini-3.5-flash-lite`, **13/18**). Other providers not yet run.  
+**Status:** Gemini free-tier **13/18**; OpenAI `gpt-6.1-sol` **12/18**. Anthropic and Grok not yet run.  
 **Sources accessed:** 2026-10-03  
 **Purpose:** Compare exact model versions on hackathon-derived agent tasks under shared conditions.
 
@@ -59,9 +59,9 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **blocked**: key OK, `credit_balance_exhausted` on smoke T1 (not scored)  
+- OpenAI `gpt-6.1-sol` — **measured 12/18** (Responses API, `reasoning.effort=low`)  
 - Anthropic `claude-sonnet-5` — not run yet  
-- Google `gemini-3.5-flash-lite` — **measured** (free tier; `gemini-3.8-flash` returned 503 high demand)  
+- Google `gemini-3.5-flash-lite` — **measured 13/18** (free tier; `gemini-3.8-flash` returned 503 high demand)  
 - xAI Grok `grok-4.7` — not run yet  
 
 **Shared conditions:** same task prompts, same sandbox tools, temperature `0`, three trials per task, reset state each trial, provider-hosted extras off.
@@ -78,6 +78,19 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 ## 5. Measured results
 
+### `gpt-6.1-sol` — **12/18**
+
+| Task | Passes / 3 | Notes |
+| --- | ---: | --- |
+| T1 Web research | 3 | |
+| T2 Memory | 3 | |
+| T3 Ticket + calendar | 0 | Calendar field mismatch (tz/`15:00`/`2026-11-03`) |
+| T4 Durable workflow | 3 | |
+| T5 Agent discovery | 0 | Not confirmed; used `America/Los_Angeles` vs required `PT` |
+| T6 Visual catalog match | 3 | |
+
+Settings: Responses API, `reasoning.effort=low`. Tokens ~24.4k in / 2.9k out.
+
 ### `gemini-3.5-flash-lite` (free tier) — **13/18**
 
 | Task | Passes / 3 | Notes |
@@ -89,11 +102,11 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 | T5 Agent discovery | 0 | Trials 1–2 `max_turns`; trial 3 incorrect (`confirmed`, `constraints`) |
 | T6 Visual catalog match | 3 | Fastest (~6.4s mean) |
 
-Failed-trial table: [`results/RESULTS.md`](results/RESULTS.md) · [`results/gemini_3.5_flash_lite_summary.json`](results/gemini_3.5_flash_lite_summary.json)
+Failed-trial tables: [`results/RESULTS.md`](results/RESULTS.md)
 
-**Practical constraint:** free-tier Gemini is limited to ~**15 `generate_content` requests/minute**. Unpaced multi-turn runs hit 429; paced runs (`--pace-seconds 20`) completed. Out-of-pocket cost for this Gemini run: **$0**.
+**Practical constraint:** free-tier Gemini is limited to ~**15 `generate_content` requests/minute**. Unpaced multi-turn runs hit 429; paced runs (`--pace-seconds 20`) completed. Gemini out-of-pocket: **$0**.
 
-OpenAI / Anthropic / Grok: **not measured**.
+Anthropic / Grok: **not measured**.
 
 ---
 

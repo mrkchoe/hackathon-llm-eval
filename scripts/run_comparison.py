@@ -39,8 +39,8 @@ TASKS = {
     "T1": {
         "file": "tasks/T1_web_product_research.md",
         "prompt": (
-            "Find an in-stock slate water bottle capacity_ml=750 price_usd<=23 in the fixture "
-            "retailers. Return JSON with product_id, name, price_usd, page_url, in_stock. "
+            "Find the cheapest in-stock slate water bottle with capacity_ml=750 and price_usd<=23 "
+            "across the fixture retailers. Return JSON with product_id, name, price_usd, page_url, in_stock. "
             "Verify with fetch_page. Tools: search_pages, fetch_page."
         ),
         "tools": ["search_pages", "fetch_page"],
@@ -226,6 +226,7 @@ def run_openai_compatible(
     api_key: str | None = None,
     base_url: str | None = None,
     max_turns: int = 10,
+    extra_create: dict | None = None,
 ) -> dict:
     from openai import OpenAI
 
@@ -255,12 +256,15 @@ def run_openai_compatible(
     ]
     usage = {"input_tokens": 0, "output_tokens": 0}
     for _ in range(max_turns):
-        resp = client.chat.completions.create(
-            model=model,
-            messages=messages,
-            tools=tool_defs,
-            temperature=0,
-        )
+        create_kwargs = {
+            "model": model,
+            "messages": messages,
+            "tools": tool_defs,
+            "temperature": 0,
+        }
+        if extra_create:
+            create_kwargs.update(extra_create)
+        resp = client.chat.completions.create(**create_kwargs)
         if resp.usage:
             usage["input_tokens"] += resp.usage.prompt_tokens or 0
             usage["output_tokens"] += resp.usage.completion_tokens or 0
@@ -299,7 +303,70 @@ def run_openai_compatible(
 
 
 def run_openai(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
-    return run_openai_compatible(model, prompt, tools, sb, max_turns=max_turns)
+    """OpenAI GPT-6.1 Sol requires the Responses API for function tools (not Chat Completions)."""
+    from openai import OpenAI
+
+    client = OpenAI()
+    tool_defs = [
+        {
+            "type": "function",
+            "name": n,
+            "description": n,
+            "parameters": {"type": "object", "additionalProperties": True},
+        }
+        for n in tools
+    ]
+    usage = {"input_tokens": 0, "output_tokens": 0}
+    reasoning = {"effort": "low"}  # none/minimal unsupported on gpt-6.1-sol
+
+    try:
+        resp = client.responses.create(
+            model=model,
+            instructions="Use tools as needed. When done, reply with a single JSON object only.",
+            input=prompt,
+            tools=tool_defs,
+            reasoning=reasoning,
+        )
+    except Exception as exc:  # noqa: BLE001
+        return {"output": {}, "usage": usage, "error": str(exc)}
+
+    for _ in range(max_turns):
+        if getattr(resp, "usage", None):
+            usage["input_tokens"] += getattr(resp.usage, "input_tokens", 0) or 0
+            usage["output_tokens"] += getattr(resp.usage, "output_tokens", 0) or 0
+
+        fcalls = [
+            item
+            for item in (resp.output or [])
+            if getattr(item, "type", None) == "function_call"
+        ]
+        if not fcalls:
+            text = getattr(resp, "output_text", None) or ""
+            return {"output": _parse_json_object(text), "usage": usage, "error": None}
+
+        tool_outputs = []
+        for fc in fcalls:
+            args = json.loads(fc.arguments or "{}")
+            result = sb.call(fc.name, args)
+            tool_outputs.append(
+                {
+                    "type": "function_call_output",
+                    "call_id": fc.call_id,
+                    "output": json.dumps(result),
+                }
+            )
+        try:
+            resp = client.responses.create(
+                model=model,
+                previous_response_id=resp.id,
+                input=tool_outputs,
+                tools=tool_defs,
+                reasoning=reasoning,
+            )
+        except Exception as exc:  # noqa: BLE001
+            return {"output": {}, "usage": usage, "error": str(exc)}
+
+    return {"output": {}, "usage": usage, "error": "max_turns"}
 
 
 def run_grok(model: str, prompt: str, tools: list[str], sb: Sandbox, max_turns: int = 10) -> dict:
@@ -555,7 +622,12 @@ def main() -> int:
                 "trial": trial,
                 "provider": args.provider,
                 "model_id": model,
-                "settings": {"temperature": 0},
+                "settings": {
+                    "api": "responses",
+                    "reasoning_effort": "low",
+                }
+                if args.provider == "openai"
+                else {"temperature": 0},
                 "role": "runtime_model_under_test",
                 "output": output,
                 "tool_calls": sb.calls,

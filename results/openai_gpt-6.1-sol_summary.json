@@ -1,17 +1,158 @@
 {
   "model_id": "gpt-6.1-sol",
   "provider": "openai",
-  "status": "blocked_insufficient_quota",
-  "note": "API key authenticated, but organization has zero remaining credits (credit_balance_exhausted). Full 6x3 evaluation was not run. This is not a task-performance score.",
-  "attempted": {
-    "run_id": "live_openai_20261004T023501Z_c38924",
-    "task_id": "T1",
-    "trial": 1,
-    "success": false,
-    "failure_class": "insufficient_quota",
-    "elapsed_seconds": 4.01
+  "status": "measured",
+  "settings": {
+    "api": "responses",
+    "reasoning_effort": "low"
   },
-  "total_passes": null,
-  "total_trials": null,
-  "task_success_rates": null
+  "run_id": "live_openai_20261004T024230Z_5d121a",
+  "note": "Measured with OpenAI Responses API, reasoning.effort=low. Chat Completions cannot tool-call gpt-6.1-sol.",
+  "task_success_rates": {
+    "T1": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    },
+    "T2": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    },
+    "T3": {
+      "passes": 0,
+      "trials": 3,
+      "rate": 0.0
+    },
+    "T4": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    },
+    "T5": {
+      "passes": 0,
+      "trials": 3,
+      "rate": 0.0
+    },
+    "T6": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0
+    }
+  },
+  "total_passes": 12,
+  "total_trials": 18,
+  "failures": [
+    {
+      "task_id": "T3",
+      "trial": 1,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "calendar"
+      ],
+      "elapsed_seconds": 14.96290250000311,
+      "output": {
+        "status": "success"
+      }
+    },
+    {
+      "task_id": "T3",
+      "trial": 2,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "calendar"
+      ],
+      "elapsed_seconds": 16.429831400004332,
+      "output": {
+        "status": "success"
+      }
+    },
+    {
+      "task_id": "T3",
+      "trial": 3,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "calendar"
+      ],
+      "elapsed_seconds": 11.000227299999096,
+      "output": {
+        "status": "success"
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 1,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 10.77153489999182,
+      "output": {
+        "specialist": "agent_scheduler",
+        "confirmed": false,
+        "constraints": {
+          "date": "2026-11-10",
+          "start": "10:00",
+          "end": "10:30",
+          "tz": "America/Los_Angeles",
+          "with": "Alice"
+        }
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 2,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 10.232039700000314,
+      "output": {
+        "specialist": "agent_scheduler",
+        "confirmed": false,
+        "constraints": {
+          "date": "2026-11-10",
+          "start": "10:00",
+          "end": "10:30",
+          "tz": "America/Los_Angeles",
+          "with": "Alice"
+        }
+      }
+    },
+    {
+      "task_id": "T5",
+      "trial": 3,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 11.307197100002668,
+      "output": {
+        "specialist": "agent_scheduler",
+        "confirmed": false,
+        "constraints": {
+          "date": "2026-11-10",
+          "start": "10:00",
+          "end": "10:30",
+          "tz": "America/Los_Angeles",
+          "with": "Alice"
+        }
+      }
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24428,
+    "output_tokens": 2852
+  },
+  "gross_usd_estimate": null,
+  "pricing_status": "unknown_do_not_invent"
 }

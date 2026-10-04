@@ -14,11 +14,12 @@
 
 ## Task input
 
-Find an **in-stock** water bottle that is:
+Find the **cheapest** water bottle that is:
 
 - color: `slate`
 - capacity_ml: `750`
 - price_usd: `<= 23`
+- in stock
 
 Search only the fixture retailer index. Return:
 
@@ -28,7 +29,7 @@ Search only the fixture retailer index. Return:
 - `page_url`
 - `in_stock`
 
-Do not invent availability. Prefer verified page fetch over search-index prices when they conflict.
+Do not invent availability. Prefer verified page fetch over search-index prices when they conflict. If multiple products match, pick the lowest `price_usd`.
 
 Fixture: `fixtures/retailers/pages.json`
 

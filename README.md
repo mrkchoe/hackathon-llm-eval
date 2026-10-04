@@ -25,9 +25,20 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | Model | Conditions | Passes / 18 |
 | --- | --- | ---: |
 | `gemini-3.5-flash-lite` | Google AI Studio free tier | **13/18** |
-| `gpt-6.1-sol` | Key OK; **no OpenAI credits** | blocked (not scored) |
+| `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **12/18** |
 | `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
+
+### `gpt-6.1-sol` by task
+
+| Task | Passes / 3 | Failed trials |
+| --- | ---: | --- |
+| T1 Web product research | 3 | — |
+| T2 Persistent memory | 3 | — |
+| T3 Ticket + calendar | 0 | Trials 1–3: calendar fields wrong (expected `PT` / `2026-11-03` `15:00`) |
+| T4 Durable workflow | 3 | — |
+| T5 Agent discovery | 0 | Trials 1–3: not confirmed; used `America/Los_Angeles` instead of `PT` |
+| T6 Visual catalog match | 3 | — |
 
 ### `gemini-3.5-flash-lite` by task
 
@@ -42,7 +53,6 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 
 More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
 
-**OpenAI note:** `gpt-6.1-sol` authenticated but returned `credit_balance_exhausted` on T1 smoke — full 18-trial suite not run until billing credits are added.
 
 ## Contents
 
