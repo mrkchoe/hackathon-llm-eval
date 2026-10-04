@@ -1,6 +1,6 @@
 # Evaluation report
 
-**Status:** Claude **18/18**; GPT **18/18**; Gemini **16/18**; Grok **15/18** (lenient graders).  
+**Status:** Claude **24/24**; GPT **24/24**; Grok **19/24**; Gemini **19/24** (T1–T8, incl. hard T7/T8).  
 **Sources accessed:** 2026-10-03  
 **Purpose:** Compare exact model versions on hackathon-derived agent tasks under shared conditions.
 
@@ -59,12 +59,12 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **measured 18/18** (Responses API, `reasoning.effort=low`)  
-- Anthropic `claude-sonnet-5` — **measured 18/18** (Messages API + tools)  
-- Google `gemini-3.5-flash-lite` — **measured 16/18** (free tier; `gemini-3.8-flash` returned 503 high demand)  
-- xAI Grok `grok-4.7` — **measured 15/18** (OpenAI-compatible API at `api.x.ai`)  
+- OpenAI `gpt-6.1-sol` — **measured 24/24** (Responses API, `reasoning.effort=low`)  
+- Anthropic `claude-sonnet-5` — **measured 24/24** (Messages API + tools)  
+- Google `gemini-3.5-flash-lite` — **measured 19/24** (free tier; fails hard T7)  
+- xAI Grok `grok-4.7` — **measured 19/24** (OpenAI-compatible API at `api.x.ai`)  
 
-Graders accept Pacific tz aliases and common tool-arg shapes; T5 counts a complete booking payload as confirmation.
+Graders accept Pacific tz aliases and common tool-arg shapes. Hard tasks: T7 policy+fraud, T8 amendment cancel.
 
 **Shared conditions:** same task prompts, same sandbox tools, temperature `0`, three trials per task, reset state each trial, provider-hosted extras off.
 
@@ -80,41 +80,16 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 ## 5. Measured results
 
-### `claude-sonnet-5` — **18/18**
+Suite **T1–T8** (24 trials). See [`results/RESULTS.md`](results/RESULTS.md).
 
-All tasks 3/3. Settings: Messages API + tools. Tokens ~106.8k in / 10.9k out. Est. cost **~$0.32**.
+| Model | Total | T7 | T8 |
+| --- | ---: | ---: | ---: |
+| `claude-sonnet-5` | **24/24** | 3/3 | 3/3 |
+| `gpt-6.1-sol` | **24/24** | 3/3 | 3/3 |
+| `grok-4.7` | **19/24** | 3/3 | 1/3 |
+| `gemini-3.5-flash-lite` | **19/24** | 0/3 | 3/3 |
 
-### `gpt-6.1-sol` — **18/18**
-
-All tasks 3/3. Settings: Responses API, `reasoning.effort=low`. Tokens ~24.4k in / 2.9k out.
-
-### `gemini-3.5-flash-lite` (free tier) — **16/18**
-
-| Task | Passes / 3 | Notes |
-| --- | ---: | --- |
-| T1 Web research | 2 | Trial 3 failed (`max_turns`) |
-| T2 Memory | 3 | |
-| T3 Ticket + calendar | 3 | |
-| T4 Durable workflow | 2 | Trial 1 failed (`max_turns`) |
-| T5 Agent discovery | 3 | |
-| T6 Visual catalog match | 3 | |
-
-Failed-trial tables: [`results/RESULTS.md`](results/RESULTS.md)
-
-**Practical constraint:** free-tier Gemini is limited to ~**15 `generate_content` requests/minute**. Unpaced multi-turn runs hit 429; paced runs (`--pace-seconds 20`) completed. Gemini out-of-pocket: **$0**.
-
-### `grok-4.7` — **15/18**
-
-| Task | Passes / 3 | Notes |
-| --- | ---: | --- |
-| T1 Web research | 3 | |
-| T2 Memory | 2 | Trial 3: junk write/recall |
-| T3 Ticket + calendar | 2 | Trial 2: never created records |
-| T4 Durable workflow | 3 | |
-| T5 Agent discovery | 2 | Trial 3: no specialist confirm |
-| T6 Visual catalog match | 3 | Fastest mean (~2.7s) |
-
-Settings: xAI Chat Completions-compatible tools. Tokens ~151.7k in / 2.4k out. Est. **~$0.32**.
+Claude/GPT tie on pass rate; Claude lower hard-task latency. Gemini free-tier RPM still shapes that run ($0 out-of-pocket).
 
 ---
 

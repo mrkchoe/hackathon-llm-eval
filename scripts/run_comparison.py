@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal multi-trial LLM comparison runner for tasks T1–T6.
+Minimal multi-trial LLM comparison runner for tasks T1–T8.
 
 Does not fabricate live results. Without API keys, only --reference-check
 (validates fixtures/graders) is available — that is NOT a model comparison.
@@ -93,6 +93,42 @@ TASKS = {
         ),
         "tools": ["search_catalog", "get_listing"],
         "vision": True,
+    },
+    "T7": {
+        "file": "tasks/T7_policy_gated_remediation.md",
+        "prompt": (
+            "Resolve support incident INC-220. Follow authoritative policy refund_v1. "
+            "Use only the provided tools. When finished return JSON "
+            "{incident_id, remediation_id, amount_usd, policy_basis}. "
+            "Tools: read_policy, lookup_incident, risk_check, list_remediations, "
+            "quote_remediation, apply_remediation, notify_user."
+        ),
+        "tools": [
+            "read_policy",
+            "lookup_incident",
+            "risk_check",
+            "list_remediations",
+            "quote_remediation",
+            "apply_remediation",
+            "notify_user",
+        ],
+        "vision": False,
+    },
+    "T8": {
+        "file": "tasks/T8_amendment_aware_scheduling.md",
+        "prompt": (
+            "Actor agent_ops. Start from note_201. "
+            "Apply the effective plan from the amendment notes. "
+            "Return JSON {status, note_id_used}. "
+            "Tools: read_amendment_note, find_ticket, create_ticket, create_calendar_entry."
+        ),
+        "tools": [
+            "read_amendment_note",
+            "find_ticket",
+            "create_ticket",
+            "create_calendar_entry",
+        ],
+        "vision": False,
     },
 }
 
@@ -198,6 +234,34 @@ def reference_solver(task_id: str, sb: Sandbox) -> dict:
         sb.call("search_catalog", {"frame_id": "frame_clear_bottle"})
         sb.call("get_listing", {"product_id": "CAT-BOTTLE-SLATE"})
         return {"product_id": "CAT-BOTTLE-SLATE", "listing_id": "L2", "price_usd": 19.99}
+    if task_id == "T7":
+        sb.call("read_policy", {"policy_id": "refund_v1"})
+        sb.call("lookup_incident", {"incident_id": "INC-220"})
+        sb.call("risk_check", {"incident_id": "INC-220"})
+        sb.call("list_remediations", {"incident_id": "INC-220"})
+        sb.call(
+            "quote_remediation",
+            {"incident_id": "INC-220", "remediation_id": "escalate"},
+        )
+        sb.call(
+            "apply_remediation",
+            {"incident_id": "INC-220", "remediation_id": "escalate", "amount_usd": 0.0},
+        )
+        sb.call(
+            "notify_user",
+            {"user_id": "cust_9", "amount_usd": 0.0, "note": "escalated due to high fraud_risk"},
+        )
+        return {
+            "incident_id": "INC-220",
+            "remediation_id": "escalate",
+            "amount_usd": 0.0,
+            "policy_basis": "risk_check fraud_risk=high → escalate only, no credit/refund",
+        }
+    if task_id == "T8":
+        sb.call("read_amendment_note", {"note_id": "note_201"})
+        sb.call("read_amendment_note", {"note_id": "note_202"})
+        # Cancellation: create nothing.
+        return {"status": "cancelled", "note_id_used": "note_202"}
     raise ValueError(task_id)
 
 

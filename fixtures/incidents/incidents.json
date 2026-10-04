@@ -1,0 +1,44 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT"
+  },
+  "incidents": {
+    "INC-219": {
+      "summary": "Customer wants a refund for a damaged bottle (recent order).",
+      "customer_request": "full refund",
+      "suggested_remediation": "full_refund",
+      "user_id": "cust_8",
+      "days_since_purchase": 5,
+      "damage_reported": true,
+      "product_type": "physical",
+      "order_total_usd": 30.0,
+      "fraud_risk": "low",
+      "remediations": ["full_refund", "store_credit", "escalate"]
+    },
+    "INC-220": {
+      "summary": "Customer wants a full refund for a damaged bottle (older order).",
+      "customer_request": "full refund",
+      "suggested_remediation": "store_credit",
+      "user_id": "cust_9",
+      "days_since_purchase": 20,
+      "damage_reported": true,
+      "product_type": "physical",
+      "order_total_usd": 48.0,
+      "fraud_risk": "high",
+      "remediations": ["full_refund", "store_credit", "escalate"]
+    },
+    "INC-221": {
+      "summary": "Digital download complaint; customer demands refund.",
+      "customer_request": "full refund",
+      "suggested_remediation": "full_refund",
+      "user_id": "cust_10",
+      "days_since_purchase": 2,
+      "damage_reported": true,
+      "product_type": "digital",
+      "order_total_usd": 12.0,
+      "fraud_risk": "low",
+      "remediations": ["full_refund", "store_credit", "escalate"]
+    }
+  }
+}

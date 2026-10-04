@@ -2,51 +2,68 @@
   "model_id": "gpt-6.1-sol",
   "provider": "openai",
   "status": "measured",
-  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
+  "tasks": "T1-T8",
   "task_success_rates": {
     "T1": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 6.69
     },
     "T2": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 7.76
     },
     "T3": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 14.13
     },
     "T4": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 7.6
     },
     "T5": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 10.77
     },
     "T6": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 3.83
+    },
+    "T7": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 14.8
+    },
+    "T8": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 7.17
     }
   },
-  "total_passes": 18,
-  "total_trials": 18,
+  "total_passes": 24,
+  "total_trials": 24,
   "failures": [],
   "token_usage": {
-    "input_tokens": 24428,
-    "output_tokens": 2852
+    "input_tokens": 43802,
+    "output_tokens": 4037
   },
   "settings": {
     "api": "responses",
     "reasoning_effort": "low"
   },
-  "run_id": "live_openai_20261004T024230Z_5d121a",
-  "gross_usd_estimate": null,
-  "pricing_status": "unknown_do_not_invent"
+  "pricing_status": "unknown_do_not_invent",
+  "gross_usd_estimate": null
 }

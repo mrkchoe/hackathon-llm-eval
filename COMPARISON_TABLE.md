@@ -1,8 +1,8 @@
 # Comparison tables
 
-**Measured:** Claude **18/18**, GPT **18/18**, Gemini **16/18**, Grok **15/18**.
+**Measured:** Claude **24/24**, GPT **24/24**, Grok **19/24**, Gemini **19/24** (T1–T8).
 
-Lenient graders (Pacific tz aliases; tool-arg aliases / nested wrappers; T5 complete booking payload). Regraded from saved traces.
+Hard tasks: **T7** (policy + hidden fraud risk) and **T8** (amendment cancellation).
 
 ---
 
@@ -16,69 +16,44 @@ Lenient graders (Pacific tz aliases; tool-arg aliases / nested wrappers; T5 comp
 | T4 Durable workflow | **3/3** | **3/3** | **2/3** | **3/3** |
 | T5 Agent discovery | **3/3** | **3/3** | **3/3** | **2/3** |
 | T6 Visual catalog match | **3/3** | **3/3** | **3/3** | **3/3** |
-| **Total passes / 18** | **18/18** | **18/18** | **16/18** | **15/18** |
+| T7 Policy remediation | **3/3** | **3/3** | **0/3** | **3/3** |
+| T8 Amendment cancel | **3/3** | **3/3** | **3/3** | **1/3** |
+| **Total passes / 24** | **24/24** | **24/24** | **19/24** | **19/24** |
 
-### Latency (mean seconds; successful trials)
+Pass-rate tie at the top: Claude mean latency on T7+T8 ≈ **9.8s** vs GPT ≈ **11.0s**.
 
-| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
+### Hard-task latency (mean seconds, passes)
+
+| Task | GPT | Claude | Gemini | Grok |
 | --- | ---: | ---: | ---: | ---: |
-| T1 | ~6.7 | ~4.5 | ~31 (2 passes) | ~6.7 |
-| T2 | ~7.8 | ~4.8 | ~32 | ~8.0 (2 passes) |
-| T3 | ~14.1 | ~8.5 | ~49 | ~11.7 (2 passes) |
-| T4 | ~7.6 | ~6.3 | ~49 (2 passes) | ~7.6 |
-| T5 | ~10.8 | ~15.2 | ~48 | ~13.0 (2 passes) |
-| T6 | ~3.8 | ~6.0 | ~6.4 | ~2.7 |
+| T7 | ~14.8 | ~12.9 | n/a | ~11.5 |
+| T8 | ~7.2 | ~6.7 | ~32.3 | ~10.3 (1 pass) |
 
-### Cost (gross USD estimate)
+---
 
-| Model | Pricing status | Sum of trial estimates |
-| --- | --- | ---: |
-| `gpt-6.1-sol` | ~24.4k in / 2.9k out; rates not pinned | null |
-| `claude-sonnet-5` | ~106.8k in / 10.9k out; $2 / $10 per MTok | **~$0.32** |
-| `gemini-3.5-flash-lite` | free tier | **$0** |
-| `grok-4.7` | ~151.7k in / 2.4k out; $2 / $6 per MTok | **~$0.32** |
+## Failed trials
 
-### Failure classes observed (counts)
+### Gemini
 
-| Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.5-flash-lite | grok-4.7 |
-| --- | ---: | ---: | ---: | ---: |
-| incorrect_output | 0 | 0 | 0 | 3 |
-| max_turns | 0 | 0 | 2 | 0 |
+| Task | Trials | Class |
+| --- | --- | --- |
+| T1 | 3 | max_turns |
+| T4 | 1 | max_turns |
+| T7 | 1–3 | max_turns / incomplete |
 
-### Failed trials (`gemini-3.5-flash-lite`)
+### Grok
 
-| Task | Trial | Class | Missed checks |
-| --- | ---: | --- | --- |
-| T1 | 3 | max_turns | product_id, price_usd, page_url, in_stock |
-| T4 | 1 | max_turns | approval_before_execute, action, duplicates |
-
-### Failed trials (`grok-4.7`)
-
-| Task | Trial | Class | Missed checks |
-| --- | ---: | --- | --- |
-| T2 | 3 | incorrect_output | write, recall |
-| T3 | 2 | incorrect_output | ticket_title, ticket_due, ticket_owner, calendar |
-| T5 | 3 | incorrect_output | specialist, confirmed |
+| Task | Trials | Class |
+| --- | --- | --- |
+| T2 | 3 | incorrect_output |
+| T3 | 2 | incorrect_output |
+| T5 | 3 | incorrect_output |
+| T8 | 1, 3 | max_turns |
 
 Full writeup: [`results/RESULTS.md`](results/RESULTS.md)
 
----
-
-## B. Build-time assistants vs runtime models (not scored together)
-
-| Dimension | Build-time assistant | Runtime model (T1–T6) |
-| --- | --- | --- |
-| Job | Help humans write/debug the hack | Power the submitted agent/app |
-| In this evaluation | **Described only** | **Measured when keys available** |
-
----
-
-## How to populate table A
-
 ```bash
-python scripts/run_comparison.py --provider openai --model gpt-6.1-sol --trials 3
-python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
-python scripts/run_comparison.py --provider gemini --model gemini-3.5-flash-lite --trials 3 --pace-seconds 20
-python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
-python scripts/regrade_all.py
+python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --trials 3
+python scripts/run_comparison.py --provider <...> --tasks T7 T8 --trials 3
+python scripts/merge_all_summaries.py
 ```

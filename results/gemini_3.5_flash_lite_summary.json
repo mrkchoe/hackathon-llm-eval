@@ -2,41 +2,59 @@
   "model_id": "gemini-3.5-flash-lite",
   "provider": "gemini",
   "status": "measured",
-  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
+  "tasks": "T1-T8",
   "task_success_rates": {
     "T1": {
       "passes": 2,
       "trials": 3,
-      "rate": 0.6666666666666666
+      "rate": 0.6666666666666666,
+      "mean_latency_s": 31.49
     },
     "T2": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 32.41
     },
     "T3": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 49.05
     },
     "T4": {
       "passes": 2,
       "trials": 3,
-      "rate": 0.6666666666666666
+      "rate": 0.6666666666666666,
+      "mean_latency_s": 48.9
     },
     "T5": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 48.35
     },
     "T6": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 6.44
+    },
+    "T7": {
+      "passes": 0,
+      "trials": 3,
+      "rate": 0.0,
+      "mean_latency_s": null
+    },
+    "T8": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 32.3
     }
   },
-  "total_passes": 16,
-  "total_trials": 18,
+  "total_passes": 19,
+  "total_trials": 24,
   "failures": [
     {
       "task_id": "T1",
@@ -49,7 +67,6 @@
         "page_url",
         "in_stock"
       ],
-      "elapsed_seconds": 55.43899640000018,
       "output": {}
     },
     {
@@ -62,15 +79,50 @@
         "action",
         "duplicates"
       ],
-      "elapsed_seconds": 56.49537839999539,
+      "output": {}
+    },
+    {
+      "task_id": "T7",
+      "trial": 1,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "remediation",
+        "quote_before_apply",
+        "notify",
+        "output"
+      ],
+      "output": {}
+    },
+    {
+      "task_id": "T7",
+      "trial": 2,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "notify",
+        "output"
+      ],
+      "output": {}
+    },
+    {
+      "task_id": "T7",
+      "trial": 3,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "remediation",
+        "quote_before_apply",
+        "notify",
+        "output"
+      ],
       "output": {}
     }
   ],
   "token_usage": {
-    "input_tokens": 53451,
-    "output_tokens": 3676
+    "input_tokens": 78689,
+    "output_tokens": 4640
   },
   "tier": "free_tier",
-  "note": "Merged free-tier runs; regraded with lenient tz/aliases. Out-of-pocket $0.",
   "gross_usd_estimate": 0
 }

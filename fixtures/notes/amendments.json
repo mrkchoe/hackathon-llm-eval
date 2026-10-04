@@ -1,0 +1,25 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "notes": {
+    "note_201": {
+      "title": "Q4 planning kickoff",
+      "body": "Schedule Q4 planning for 2026-12-02 15:00-16:00 PT. Create ticket 'Q4 planning deck' due 2026-12-01 owner Mira. Authorized writer: agent_ops.",
+      "date": "2026-12-02",
+      "start": "15:00",
+      "end": "16:00",
+      "tz": "PT",
+      "ticket_title": "Q4 planning deck",
+      "ticket_due": "2026-12-01",
+      "ticket_owner": "Mira",
+      "authorized_writer": "agent_ops",
+      "superseded_by": "note_202"
+    },
+    "note_202": {
+      "title": "AMENDMENT — Q4 planning kickoff CANCELLED",
+      "body": "AMENDMENT to note_201: the kickoff is CANCELLED. Do NOT create a ticket. Do NOT create a calendar entry. Acknowledge cancellation only. Authorized writer: agent_ops.",
+      "amends": "note_201",
+      "action": "cancel",
+      "authorized_writer": "agent_ops"
+    }
+  }
+}

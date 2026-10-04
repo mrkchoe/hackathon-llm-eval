@@ -2,47 +2,64 @@
   "model_id": "claude-sonnet-5",
   "provider": "anthropic",
   "status": "measured",
-  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
+  "tasks": "T1-T8",
   "task_success_rates": {
     "T1": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 4.5
     },
     "T2": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 4.77
     },
     "T3": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 8.52
     },
     "T4": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 6.33
     },
     "T5": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 15.23
     },
     "T6": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 6.03
+    },
+    "T7": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 12.88
+    },
+    "T8": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 6.72
     }
   },
-  "total_passes": 18,
-  "total_trials": 18,
+  "total_passes": 24,
+  "total_trials": 24,
   "failures": [],
   "token_usage": {
-    "input_tokens": 106841,
-    "output_tokens": 10865
+    "input_tokens": 176795,
+    "output_tokens": 14822
   },
-  "run_id": "live_anthropic_20261004T030053Z_7c0cde",
-  "gross_usd_estimate": 0.322332,
-  "pricing_status": "estimate_$2_in_$10_out_per_MTok"
+  "pricing_status": "estimate_$2_in_$10_out_per_MTok",
+  "gross_usd_estimate": 0.50181
 }

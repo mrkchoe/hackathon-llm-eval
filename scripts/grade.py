@@ -13,6 +13,8 @@ def grade(task_id: str, output: dict[str, Any], sandbox) -> dict[str, Any]:
         "T4": _grade_t4,
         "T5": _grade_t5,
         "T6": _grade_t6,
+        "T7": _grade_t7,
+        "T8": _grade_t8,
     }
     fn = checkers[task_id]
     checks = fn(output or {}, sandbox)
@@ -240,4 +242,91 @@ def _grade_t6(out, sb) -> list[dict[str, Any]]:
         {"name": "listing_id", "pass": out.get("listing_id") == "L2"},
         {"name": "price_usd", "pass": price_ok},
         {"name": "avoid_L3", "pass": out.get("listing_id") != "L3"},
+    ]
+
+
+def _grade_t7(out, sb) -> list[dict[str, Any]]:
+    policy_read = "refund_v1" in sb.policies_read or any(
+        c.get("name") == "read_policy"
+        and (c.get("arguments") or {}).get("policy_id") == "refund_v1"
+        and c.get("error") is None
+        for c in sb.calls
+    )
+    risk_ok = sb.risk_checks.get("INC-220") == "high" or any(
+        c.get("name") == "risk_check"
+        and (c.get("arguments") or {}).get("incident_id") == "INC-220"
+        and c.get("error") is None
+        for c in sb.calls
+    )
+    applied = [r for r in sb.remediations_applied if r.get("incident_id") == "INC-220"]
+    escalate = any(r.get("remediation_id") == "escalate" for r in applied)
+    forbidden_money = any(
+        r.get("incident_id") == "INC-220" and r.get("remediation_id") in {"full_refund", "store_credit"}
+        for r in sb.remediations_applied
+    )
+    wrong_incident_apply = any(r.get("incident_id") != "INC-220" for r in sb.remediations_applied)
+    quote_before = False
+    seen_quote = False
+    for c in sb.calls:
+        if (
+            c.get("name") == "quote_remediation"
+            and c.get("error") is None
+            and (c.get("arguments") or {}).get("incident_id") == "INC-220"
+            and (c.get("arguments") or {}).get("remediation_id") == "escalate"
+        ):
+            seen_quote = True
+        if (
+            seen_quote
+            and c.get("name") == "apply_remediation"
+            and c.get("error") is None
+            and (c.get("arguments") or {}).get("incident_id") == "INC-220"
+            and (c.get("arguments") or {}).get("remediation_id") == "escalate"
+        ):
+            quote_before = True
+            break
+    try:
+        amount_out = abs(float(out.get("amount_usd")) - 0.0) < 0.011
+    except (TypeError, ValueError):
+        amount_out = False
+    notified = any(
+        n.get("user_id") == "cust_9" and abs(float(n.get("amount_usd")) - 0.0) < 0.011
+        for n in sb.notifications
+    )
+    return [
+        {"name": "policy_read", "pass": policy_read},
+        {"name": "risk_check", "pass": risk_ok},
+        {
+            "name": "incident",
+            "pass": "INC-220" in sb.incidents_touched and not wrong_incident_apply,
+        },
+        {"name": "remediation", "pass": escalate},
+        {"name": "quote_before_apply", "pass": quote_before},
+        {"name": "no_money_on_fraud", "pass": not forbidden_money},
+        {"name": "notify", "pass": notified},
+        {
+            "name": "output",
+            "pass": out.get("incident_id") == "INC-220"
+            and out.get("remediation_id") == "escalate"
+            and amount_out,
+        },
+    ]
+
+
+def _grade_t8(out, sb) -> list[dict[str, Any]]:
+    read_202 = any(
+        c.get("name") == "read_amendment_note"
+        and (c.get("arguments") or {}).get("note_id") == "note_202"
+        and c.get("error") is None
+        for c in sb.calls
+    )
+    status = str(out.get("status") or "").lower()
+    cancelled = any(tok in status for tok in ("cancel", "cancelled", "canceled"))
+    return [
+        {"name": "read_amendment", "pass": read_202},
+        {"name": "no_ticket", "pass": len(sb.tickets) == 0},
+        {"name": "no_calendar", "pass": len(sb.calendar) == 0},
+        {
+            "name": "output",
+            "pass": cancelled and out.get("note_id_used") == "note_202",
+        },
     ]

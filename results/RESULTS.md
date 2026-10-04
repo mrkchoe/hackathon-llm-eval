@@ -1,62 +1,47 @@
 # Measured results
 
-Only live API runs are recorded here. Scores use the **current lenient graders** (regraded from saved tool traces).
+Scores use lenient graders on saved traces. Suite is **T1–T8** (24 trials/model).
 
-**Grading note:** Pacific tz accepts `PT` ≈ `America/Los_Angeles`; common tool-arg aliases and nested wrappers (`{"id":…}`, `{"value":…}`); T5 confirmation from a complete booking payload.
+**Hard tasks added:**  
+- **T7** policy-gated remediation (hidden fraud risk → escalate)  
+- **T8** amendment cancellation (must not create from stale note)
 
 ## Summary
 
-| Model | Conditions | Passes / trials |
-| --- | --- | ---: |
-| `claude-sonnet-5` | Anthropic Messages API + tools | **18 / 18** |
-| `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **18 / 18** |
-| `gemini-3.5-flash-lite` | Free tier, paced | **16 / 18** |
-| `grok-4.7` | xAI OpenAI-compatible API | **15 / 18** |
+| Model | Passes / 24 | T7 | T8 | Notes |
+| --- | ---: | ---: | ---: | --- |
+| `claude-sonnet-5` | **24 / 24** | 3/3 | 3/3 | Fastest on hard tasks (~9.8s mean T7+T8) |
+| `gpt-6.1-sol` | **24 / 24** | 3/3 | 3/3 | Tied on pass rate; ~11.0s mean T7+T8 |
+| `grok-4.7` | **19 / 24** | 3/3 | 1/3 | Misses on T2/T3/T5 + T8 |
+| `gemini-3.5-flash-lite` | **19 / 24** | 0/3 | 3/3 | Free tier; fails T7 |
 
-Machine-readable: JSON summaries in this folder + [`regrade_overlay.json`](regrade_overlay.json).
-
----
-
-## `claude-sonnet-5` / `gpt-6.1-sol`
-
-All tasks **3/3** (18/18).
+Claude and GPT both clean-sweep pass rate; T7/T8 separate the field below them. Tie-break among perfect scores: latency on hard tasks (Claude faster).
 
 ---
 
-## `gemini-3.5-flash-lite` — **16/18**
+## By task (passes / 3)
 
-| Task | Passes / 3 | Notes |
-| --- | ---: | --- |
-| T1 | 2 | Trial 3: no product answer |
-| T2 | 3 | |
-| T3 | 3 | |
-| T4 | 2 | Trial 1: never executed after approval |
-| T5 | 3 | |
-| T6 | 3 | |
+| Task | Claude | GPT | Gemini | Grok |
+| --- | ---: | ---: | ---: | ---: |
+| T1 Web research | 3 | 3 | 2 | 3 |
+| T2 Memory | 3 | 3 | 3 | 2 |
+| T3 Ticket + calendar | 3 | 3 | 3 | 2 |
+| T4 Durable workflow | 3 | 3 | 2 | 3 |
+| T5 Agent discovery | 3 | 3 | 3 | 2 |
+| T6 Visual catalog | 3 | 3 | 3 | 3 |
+| T7 Policy remediation | 3 | 3 | 0 | 3 |
+| T8 Amendment cancel | 3 | 3 | 3 | 1 |
 
----
+### Remaining failures
 
-## `grok-4.7` — **15/18**
+**Gemini:** T1 t3, T4 t1, T7 t1–t3 (max_turns / incomplete remediation).  
+**Grok:** T2 t3, T3 t2, T5 t3, T8 t1 & t3.
 
-| Task | Passes / 3 | Mean latency (passes) |
-| --- | ---: | ---: |
-| T1 Web product research | 3 | ~6.7 s |
-| T2 Persistent memory | 2 | ~8.0 s |
-| T3 Ticket + calendar | 2 | ~11.7 s |
-| T4 Durable workflow | 3 | ~7.6 s |
-| T5 Agent discovery | 2 | ~13.0 s |
-| T6 Visual catalog match | 3 | ~2.7 s |
+### Cost (approx.)
 
-**Tokens:** ~151.7k in / ~2.4k out. Est. cost ~**$0.32** ($2 / $6 per MTok).
-
-### Failures — 3/18
-
-| Task | Trial | Class | What failed |
-| --- | ---: | --- | --- |
-| T2 Persistent memory | 3 | `incorrect_output` | Wrote junk (`-1`) instead of vegetarian; recall wrong |
-| T3 Ticket + calendar | 2 | `incorrect_output` | Never created ticket/calendar (`read_note` arg error) |
-| T5 Agent discovery | 3 | `incorrect_output` | No specialist messaging; `confirmed` false |
-
-### Not claimed
-- Broad superiority from this small pilot  
-- Official hackathon eligibility or live sponsor-stack usage  
+| Model | Estimate |
+| --- | --- |
+| Claude | ~$0.3+ (full T1–T8 token mix) |
+| GPT | rates not pinned |
+| Grok | ~$0.3+ |
+| Gemini | $0 free tier |

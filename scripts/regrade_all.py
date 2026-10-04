@@ -67,7 +67,8 @@ def summarize(rows: list[dict], model_id: str, provider: str, extra: dict | None
     rates = {}
     fails = []
     tok_in = tok_out = 0
-    for task in ["T1", "T2", "T3", "T4", "T5", "T6"]:
+    tasks = sorted({r["task_id"] for r in rows}) or ["T1", "T2", "T3", "T4", "T5", "T6", "T7"]
+    for task in tasks:
         tr = [r for r in rows if r["task_id"] == task]
         passes = sum(1 for r in tr if r.get("success"))
         rates[task] = {"passes": passes, "trials": len(tr), "rate": (passes / len(tr) if tr else None)}
@@ -144,7 +145,8 @@ def merge_gemini(model_id: str = "gemini-3.5-flash-lite") -> list[dict]:
             else:
                 by[key] = r
     rows = []
-    for task in ["T1", "T2", "T3", "T4", "T5", "T6"]:
+    tasks = sorted({k[0] for k in by}) or ["T1", "T2", "T3", "T4", "T5", "T6", "T7"]
+    for task in tasks:
         for t in range(1, 4):
             if (task, t) in by:
                 rows.append(by[(task, t)])

@@ -195,6 +195,12 @@ class Sandbox:
         self.agent_messages: list[dict[str, Any]] = []
         self.fetched_urls: set[str] = set()
         self.calls: list[dict[str, Any]] = []
+        self.policies_read: set[str] = set()
+        self.incidents_touched: set[str] = set()
+        self.remediations_applied: list[dict[str, Any]] = []
+        self.notifications: list[dict[str, Any]] = []
+        self.quotes: list[dict[str, Any]] = []
+        self.risk_checks: dict[str, str] = {}
 
     def call(self, name: str, args: dict[str, Any] | None = None) -> dict[str, Any]:
         args = args or {}
@@ -257,19 +263,28 @@ class Sandbox:
             raise RuntimeError("note_not_found")
         return {"note_id": note_id, **notes[note_id]}
 
+    def read_amendment_note(self, note_id: str) -> dict[str, Any]:
+        notes = _load("notes/amendments.json")["notes"]
+        if note_id not in notes:
+            raise RuntimeError("note_not_found")
+        return {"note_id": note_id, **notes[note_id]}
+
     def find_ticket(self, title: str) -> dict[str, Any]:
         return {"matches": [t for t in self.tickets if t.get("title") == title]}
 
     def create_ticket(
         self, title: str, due: str, owner: str, actor: str, note_id: str | None = None
     ) -> dict[str, Any]:
-        notes = _load("notes/meetings.json")["notes"]
+        notes = {
+            **_load("notes/meetings.json")["notes"],
+            **_load("notes/amendments.json")["notes"],
+        }
         if note_id and notes.get(note_id, {}).get("authorized_writer") != actor:
             raise PermissionError("unauthorized")
         existing = [t for t in self.tickets if t.get("title") == title]
         if existing:
             return {"duplicate": True, "ticket": existing[0]}
-        ticket = {"title": title, "due": due, "owner": owner, "actor": actor}
+        ticket = {"title": title, "due": due, "owner": owner, "actor": actor, "note_id": note_id}
         self.tickets.append(ticket)
         return {"duplicate": False, "ticket": ticket}
 
@@ -283,10 +298,21 @@ class Sandbox:
         actor: str,
         note_id: str | None = None,
     ) -> dict[str, Any]:
-        notes = _load("notes/meetings.json")["notes"]
+        notes = {
+            **_load("notes/meetings.json")["notes"],
+            **_load("notes/amendments.json")["notes"],
+        }
         if note_id and notes.get(note_id, {}).get("authorized_writer") != actor:
             raise PermissionError("unauthorized")
-        entry = {"date": date, "start": start, "end": end, "tz": tz, "title": title, "actor": actor}
+        entry = {
+            "date": date,
+            "start": start,
+            "end": end,
+            "tz": tz,
+            "title": title,
+            "actor": actor,
+            "note_id": note_id,
+        }
         self.calendar.append(entry)
         return {"entry": entry}
 
@@ -372,3 +398,144 @@ class Sandbox:
                     raise RuntimeError("listing_not_found")
                 return {"product_id": product_id, "listings": p["listings"]}
         raise RuntimeError("product_not_found")
+
+    def read_policy(self, policy_id: str) -> dict[str, Any]:
+        pol = _load("policy/refund_policy.json")["policies"].get(policy_id)
+        if not pol:
+            raise RuntimeError("policy_not_found")
+        self.policies_read.add(policy_id)
+        return {"policy_id": policy_id, **pol}
+
+    def lookup_incident(self, incident_id: str) -> dict[str, Any]:
+        inc = _load("incidents/incidents.json")["incidents"].get(incident_id)
+        if not inc:
+            raise RuntimeError("incident_not_found")
+        self.incidents_touched.add(incident_id)
+        body = {
+            k: v
+            for k, v in inc.items()
+            if k not in {"remediations", "fraud_risk"}
+        }
+        return {"incident_id": incident_id, **body}
+
+    def risk_check(self, incident_id: str) -> dict[str, Any]:
+        inc = _load("incidents/incidents.json")["incidents"].get(incident_id)
+        if not inc:
+            raise RuntimeError("incident_not_found")
+        self.incidents_touched.add(incident_id)
+        risk = str(inc.get("fraud_risk") or "low")
+        self.risk_checks[incident_id] = risk
+        return {"incident_id": incident_id, "fraud_risk": risk}
+
+    def list_remediations(self, incident_id: str) -> dict[str, Any]:
+        inc = _load("incidents/incidents.json")["incidents"].get(incident_id)
+        if not inc:
+            raise RuntimeError("incident_not_found")
+        self.incidents_touched.add(incident_id)
+        return {
+            "incident_id": incident_id,
+            "remediations": list(inc.get("remediations") or []),
+            "note": "Ordered by customer preference, not policy.",
+        }
+
+    def _quote(self, incident_id: str, incident: dict[str, Any], remediation_id: str) -> dict[str, Any]:
+        risk = self.risk_checks.get(incident_id)
+        if risk is None:
+            return {
+                "allowed": False,
+                "amount_usd": 0.0,
+                "reason": "risk_check_required_before_quote",
+            }
+        if risk == "high":
+            ok = remediation_id == "escalate"
+            return {
+                "allowed": ok,
+                "amount_usd": 0.0,
+                "reason": "high fraud_risk -> escalate only"
+                if ok
+                else "high fraud_risk forbids refund/credit",
+            }
+        days = int(incident.get("days_since_purchase") or 999)
+        damage = bool(incident.get("damage_reported"))
+        digital = str(incident.get("product_type") or "").lower() == "digital"
+        total = float(incident.get("order_total_usd") or 0)
+        if remediation_id == "full_refund":
+            ok = damage and days <= 14 and not digital
+            return {
+                "allowed": ok,
+                "amount_usd": total if ok else 0.0,
+                "reason": "full refund within 14-day damage window"
+                if ok
+                else "full_refund forbidden by refund_v1",
+            }
+        if remediation_id == "store_credit":
+            if damage and days > 14:
+                return {
+                    "allowed": True,
+                    "amount_usd": round(total * 0.5, 2),
+                    "reason": "late damage -> store_credit at 50% of order_total_usd",
+                }
+            if damage and digital:
+                return {
+                    "allowed": True,
+                    "amount_usd": round(total * 0.5, 2),
+                    "reason": "digital goods -> store_credit at 50%",
+                }
+            return {
+                "allowed": False,
+                "amount_usd": 0.0,
+                "reason": "store_credit not applicable",
+            }
+        if remediation_id == "escalate":
+            ok = not damage
+            return {
+                "allowed": ok,
+                "amount_usd": 0.0,
+                "reason": "escalate when no damage reported" if ok else "escalate not applicable",
+            }
+        return {"allowed": False, "amount_usd": 0.0, "reason": "unknown_remediation"}
+
+    def quote_remediation(self, incident_id: str, remediation_id: str) -> dict[str, Any]:
+        inc = _load("incidents/incidents.json")["incidents"].get(incident_id)
+        if not inc:
+            raise RuntimeError("incident_not_found")
+        self.incidents_touched.add(incident_id)
+        q = self._quote(incident_id, inc, remediation_id)
+        self.quotes.append({"incident_id": incident_id, "remediation_id": remediation_id, **q})
+        return {"incident_id": incident_id, "remediation_id": remediation_id, **q}
+
+    def apply_remediation(
+        self, incident_id: str, remediation_id: str, amount_usd: float | None = None
+    ) -> dict[str, Any]:
+        inc = _load("incidents/incidents.json")["incidents"].get(incident_id)
+        if not inc:
+            raise RuntimeError("incident_not_found")
+        self.incidents_touched.add(incident_id)
+        if remediation_id not in (inc.get("remediations") or []):
+            raise RuntimeError("unknown_remediation")
+        if incident_id not in self.risk_checks:
+            raise PermissionError("risk_check_required")
+        quoted = any(
+            q.get("incident_id") == incident_id and q.get("remediation_id") == remediation_id
+            for q in self.quotes
+        )
+        if not quoted:
+            raise PermissionError("quote_required_before_apply")
+        q = self._quote(incident_id, inc, remediation_id)
+        if not q["allowed"]:
+            raise PermissionError("policy_forbids_remediation")
+        if amount_usd is None or abs(float(amount_usd) - float(q["amount_usd"])) > 0.011:
+            raise PermissionError("amount_must_match_policy_quote")
+        rec = {
+            "incident_id": incident_id,
+            "remediation_id": remediation_id,
+            "amount_usd": float(q["amount_usd"]),
+            "user_id": inc.get("user_id"),
+        }
+        self.remediations_applied.append(rec)
+        return {"applied": True, **rec}
+
+    def notify_user(self, user_id: str, amount_usd: float, note: str = "") -> dict[str, Any]:
+        rec = {"user_id": user_id, "amount_usd": float(amount_usd), "note": note}
+        self.notifications.append(rec)
+        return {"notified": True, **rec}

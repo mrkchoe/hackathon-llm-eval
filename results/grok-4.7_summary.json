@@ -2,41 +2,59 @@
   "model_id": "grok-4.7",
   "provider": "grok",
   "status": "measured",
-  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
+  "tasks": "T1-T8",
   "task_success_rates": {
     "T1": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 6.69
     },
     "T2": {
       "passes": 2,
       "trials": 3,
-      "rate": 0.6666666666666666
+      "rate": 0.6666666666666666,
+      "mean_latency_s": 7.1
     },
     "T3": {
       "passes": 2,
       "trials": 3,
-      "rate": 0.6666666666666666
+      "rate": 0.6666666666666666,
+      "mean_latency_s": 11.68
     },
     "T4": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 7.63
     },
     "T5": {
       "passes": 2,
       "trials": 3,
-      "rate": 0.6666666666666666
+      "rate": 0.6666666666666666,
+      "mean_latency_s": 12.99
     },
     "T6": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0
+      "rate": 1.0,
+      "mean_latency_s": 2.7
+    },
+    "T7": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 11.54
+    },
+    "T8": {
+      "passes": 1,
+      "trials": 3,
+      "rate": 0.3333333333333333,
+      "mean_latency_s": 10.28
     }
   },
-  "total_passes": 15,
-  "total_trials": 18,
+  "total_passes": 19,
+  "total_trials": 24,
   "failures": [
     {
       "task_id": "T2",
@@ -47,7 +65,6 @@
         "write",
         "recall"
       ],
-      "elapsed_seconds": 12.625313000011374,
       "output": {
         "cuisine": -1,
         "final_cuisine": -1
@@ -64,7 +81,6 @@
         "ticket_owner",
         "calendar"
       ],
-      "elapsed_seconds": 2.5003619999915827,
       "output": {
         "status": "error",
         "message": "read_note requires note_id"
@@ -79,7 +95,6 @@
         "specialist",
         "confirmed"
       ],
-      "elapsed_seconds": 5.349681799998507,
       "output": {
         "specialist": null,
         "confirmed": false,
@@ -91,18 +106,38 @@
           "with": "Alice"
         }
       }
+    },
+    {
+      "task_id": "T8",
+      "trial": 1,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "read_amendment",
+        "output"
+      ],
+      "output": {}
+    },
+    {
+      "task_id": "T8",
+      "trial": 3,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "read_amendment",
+        "output"
+      ],
+      "output": {}
     }
   ],
   "token_usage": {
-    "input_tokens": 151713,
-    "output_tokens": 2437
+    "input_tokens": 251650,
+    "output_tokens": 3606
   },
   "settings": {
     "api": "openai_compatible",
-    "base_url": "https://api.x.ai/v1",
-    "temperature": 0
+    "base_url": "https://api.x.ai/v1"
   },
-  "run_id": "live_grok_20261004T031446Z_6f937d",
   "pricing_status": "estimate_$2_in_$6_out_per_MTok",
-  "gross_usd_estimate": 0.318048
+  "gross_usd_estimate": 0.524936
 }
