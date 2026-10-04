@@ -1,0 +1,67 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT",
+    "note": "Fictional retailer pages for evaluation only."
+  },
+  "pages": [
+    {
+      "url": "https://fixture.shop/alpha/widgets",
+      "title": "Alpha Widgets",
+      "products": [
+        {
+          "id": "AW-100",
+          "name": "TrailBottle 750",
+          "price_usd": 24.0,
+          "color": "slate",
+          "capacity_ml": 750,
+          "in_stock": true
+        },
+        {
+          "id": "AW-200",
+          "name": "TrailBottle 500",
+          "price_usd": 18.0,
+          "color": "slate",
+          "capacity_ml": 500,
+          "in_stock": true
+        }
+      ]
+    },
+    {
+      "url": "https://fixture.shop/beta/outdoors",
+      "title": "Beta Outdoors",
+      "products": [
+        {
+          "id": "BO-77",
+          "name": "Summit Flask 750",
+          "price_usd": 22.5,
+          "color": "slate",
+          "capacity_ml": 750,
+          "in_stock": true
+        },
+        {
+          "id": "BO-88",
+          "name": "Summit Flask 750",
+          "price_usd": 29.0,
+          "color": "crimson",
+          "capacity_ml": 750,
+          "in_stock": false
+        }
+      ]
+    },
+    {
+      "url": "https://fixture.shop/gamma/deals",
+      "title": "Gamma Deals",
+      "products": [
+        {
+          "id": "GD-9",
+          "name": "TrailBottle 750",
+          "price_usd": 19.99,
+          "color": "slate",
+          "capacity_ml": 750,
+          "in_stock": true
+        }
+      ]
+    }
+  ]
+}

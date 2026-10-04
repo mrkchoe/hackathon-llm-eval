@@ -1,0 +1,40 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT"
+  },
+  "products": [
+    {
+      "product_id": "CAT-BOTTLE-SLATE",
+      "name": "TrailBottle 750 Slate",
+      "listings": [
+        {
+          "listing_id": "L1",
+          "price_usd": 24.0,
+          "eligible": true
+        },
+        {
+          "listing_id": "L2",
+          "price_usd": 19.99,
+          "eligible": true
+        },
+        {
+          "listing_id": "L3",
+          "price_usd": 17.0,
+          "eligible": false
+        }
+      ]
+    },
+    {
+      "product_id": "CAT-MUG-BLUE",
+      "name": "CampMug Blue",
+      "listings": [
+        {
+          "listing_id": "L4",
+          "price_usd": 12.0,
+          "eligible": true
+        }
+      ]
+    }
+  ]
+}

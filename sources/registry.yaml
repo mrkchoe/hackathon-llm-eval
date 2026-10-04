@@ -1,0 +1,232 @@
+# Evidence kinds:
+#   official_requirement  — from organizer/sponsor pages or rules
+#   participant_reported  — project writeups; not independently verified
+#   evaluation_adaptation — tasks/fixtures we created for this pilot
+#
+# Accessed: 2026-10-03 unless noted. Recheck before publishing claims.
+# Do not copy entire pages. Paraphrases only.
+
+meta:
+  accessed_date: "2026-10-03"
+  pilot_label: "HackEval pilot — not an official hackathon benchmark"
+
+sources:
+  - id: berkeley-ai-hackathon-2026-devpost
+    event: UC Berkeley AI Hackathon 2026
+    organizer: Hackathons @ Berkeley / Cal Hacks
+    location: Berkeley, CA (Martin Luther King, Jr. Student Union)
+    online: false
+    dates: "2026-06-20 to 2026-06-21"
+    challenge_or_submission: Event page (prizes & sponsor tracks)
+    url: https://ai-hackathon-2026.devpost.com/
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      Collegiate AI hackathon with multiple sponsor prize tracks. Browserbase
+      track: build any web agent using any model/framework, but it must be
+      powered by Browserbase via browsers, search, fetch, Stagehand, or Browse CLI.
+      Redis track: use Redis beyond caching (agent memory, vector search, context
+      retrieval) among creativity/technical criteria. Claude/Anthropic and Redis
+      Cloud credits appear as winner prizes on the page.
+    required_sponsor_technology:
+      browserbase_track: Browserbase platform (one of browsers/search/fetch/Stagehand/Browse CLI)
+      redis_track: Meaningful Redis usage beyond caching for eligibility emphasis
+    optional_or_preferred_technology: []
+    available_participant_resources: unknown
+    winner_prizes:
+      - "Best Use of Browserbase: cash/merch+credits (winner awards)"
+      - "Redis: Mac Minis / 25k Redis Cloud credits for the team / merch (winner awards)"
+      - "Claude-related API credit prizes listed as winner awards"
+    unknown_or_inaccessible:
+      - Exact participant API credit budgets during the event (if any) not confirmed as unrestricted build budgets
+      - Some prize TBA fields
+    informed_evaluation_task:
+      - web_research (Browserbase-adapted sandbox)
+      - persistent_memory (Redis-inspired memory tools)
+
+  - id: cal-hacks-12-devpost
+    event: Cal Hacks 12.0
+    organizer: Cal Hacks
+    location: Palace of Fine Arts, San Francisco, CA
+    online: false
+    dates: "2025-10-24 to 2025-10-26"
+    challenge_or_submission: Event page (prizes & sponsor tracks)
+    url: https://cal-hacks-12-0.devpost.com/
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      Collegiate hackathon with sponsor challenges including Composio Toolrouter
+      (integration depth across applications), Conversion (must incorporate
+      workflows and a workflow builder; Temporal preferred/ideal), Letta
+      (stateful persistent memory), Fetch AI Agentverse/chat protocol tracks,
+      plus advertised DigitalOcean $200 signup offer and student Snowflake trial.
+    required_sponsor_technology:
+      composio_track: Composio Toolrouter integration across apps (judged on depth)
+      conversion_track: Workflows + application workflow builder (Temporal preferred)
+      letta_track: Letta Cloud or self-hosted Letta with meaningful persistent memory
+    optional_or_preferred_technology:
+      - Temporal for Conversion track
+    available_participant_resources:
+      - "DigitalOcean $200 signup offer — historical offer; current eligibility unverified"
+      - "Student Snowflake 120-day trial — historical offer; current eligibility unverified"
+    winner_prizes:
+      - "Composio: $4K in Composio Credits (winner)"
+      - "Conversion: Vespa Scooter or cash equivalent (winner)"
+      - "Claude: Tungsten Cube + $5000 API Credits (winner)"
+    unknown_or_inaccessible:
+      - Whether historical cloud signup offers remain redeemable
+      - Exact Composio credit grant terms for winners vs participants
+    informed_evaluation_task:
+      - cross_app_automation
+      - durable_workflow
+      - persistent_memory
+
+  - id: fetch-cal-hacks-12
+    event: Cal Hacks 12.0 (Fetch.ai Innovation Lab page)
+    organizer: Fetch.ai
+    location: Palace of Fine Arts, San Francisco, CA
+    online: false
+    dates: "2025-10-24 (event weekend Oct 24–26, 2025)"
+    challenge_or_submission: Best Use of Fetch.ai / Agentverse deployment
+    url: https://www.fetch.ai/events/cal-hacks-12-0
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      To qualify for Best Use of Fetch.ai, teams must register agents on
+      Agentverse, enable the chat protocol, and integrate Anthropic Claude or
+      any LLM as the reasoning engine. Separate prizes for Agentverse deployment
+      volume and viral ASI:One Personal AI.
+    required_sponsor_technology:
+      - Agentverse registration
+      - Chat protocol
+      - LLM reasoning engine (Claude or other)
+    optional_or_preferred_technology:
+      - ASI:One Personal AI
+    available_participant_resources: unknown
+    winner_prizes:
+      - "$2500 Best Use of Fetch.ai"
+      - "$1500 Best Deployment of Agentverse"
+      - "$1000 Most Viral ASI:One Personal AI"
+    unknown_or_inaccessible:
+      - One-month ASI:One Pro / Agentverse Premium offer not confirmed on this page at access time; treat any such offer as historical if advertised elsewhere
+    informed_evaluation_task:
+      - agent_discovery_coordination
+
+  - id: fetch-uk-ai-agent-hackathon
+    event: UK AI Agent Hackathon
+    organizer: Fetch.ai
+    location: Imperial College London, UK
+    online: false
+    dates: "2025-03-15 (hacking) through 2025-04-13 (demo day per hackpack)"
+    challenge_or_submission: Multi-agent systems on uAgents / Agentverse / ASI-1 Mini
+    url: https://www.fetch.ai/events/hackathons/uk-ai-agent-hackathon/hackpack
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      Europe-based Web3×AI hackathon. Challenge: build multi-agent systems using
+      Fetch.ai LLM ASI-1 Mini with uAgents or Fetch.ai SDK. Judging includes
+      Agentverse registration, quantity/diversity of agents, and whether a
+      personal assistant uses Search and Discover on Agentverse to coordinate.
+    required_sponsor_technology:
+      - uAgents and/or Fetch.ai SDK
+      - Agentverse registration (judging criterion)
+    optional_or_preferred_technology:
+      - ASI-1 Mini
+      - Agentverse Search and Discover
+    available_participant_resources: unknown
+    winner_prizes:
+      - "Winner Best Use of Fetch.ai Tech: £500"
+    unknown_or_inaccessible:
+      - Full prize schedule beyond listed winner amount
+    informed_evaluation_task:
+      - agent_discovery_coordination
+
+  - id: tidb-agentx-2025
+    event: TiDB AgentX Hackathon 2025
+    organizer: PingCAP / TiDB
+    location: Online (worldwide participation)
+    online: true
+    dates: "2025-08-01 to 2025-09-15"
+    challenge_or_submission: Multi-step agentic workflows on TiDB Serverless
+    url: https://tidb-2025-hackathon.devpost.com/
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      Fully online hackathon requiring TiDB Serverless (including vector search)
+      for a working multi-step agentic application. Agent must chain at least two
+      building blocks (ingest/index, search, optional LLM calls, external tools,
+      multi-step flow) into one automated workflow ending in action.
+    required_sponsor_technology:
+      - TiDB Serverless / TiDB Cloud (vector search emphasized)
+    optional_or_preferred_technology:
+      - MCP
+      - External tool APIs
+    available_participant_resources:
+      - TiDB Cloud account (required to submit associated email)
+    winner_prizes:
+      - "Cash prizes totaling $30,500 across place and special awards"
+    unknown_or_inaccessible:
+      - Exact free-tier TiDB limits during event for each participant
+    informed_evaluation_task:
+      - durable_workflow
+      - persistent_memory
+
+  - id: daytona-hacksprint-sf-rules
+    event: Daytona HackSprint SF
+    organizer: Daytona (event via Devpost)
+    location: San Francisco, CA
+    online: false
+    dates: "2025-11-15"
+    challenge_or_submission: Official rules
+    url: https://daytona-hacksprint-sf-nov-25.devpost.com/rules
+    date_accessed: "2026-10-03"
+    evidence_kind: official_requirement
+    paraphrase: >
+      In-person one-day sprint. Sponsor tools (Daytona, Anthropic, Galileo,
+      Sentry, CodeRabbit, Browser Use) are encouraged, not universally mandatory.
+      Winner prizes include cash plus Daytona credits; these are awards, not
+      guaranteed participant resources.
+    required_sponsor_technology: []
+    optional_or_preferred_technology:
+      - Daytona
+      - Anthropic
+      - Browser Use
+      - Galileo
+      - Sentry
+      - CodeRabbit
+    available_participant_resources: unknown
+    winner_prizes:
+      - "1st: $2000 cash + $10,000 Daytona credits"
+      - "Best Use of Daytona: $1000 cash + $10,000 Daytona credits"
+    unknown_or_inaccessible:
+      - Special prize TBA amounts
+    informed_evaluation_task:
+      - visual_product_matching
+
+  - id: shop-the-video-submission
+    event: Daytona HackSprint SF
+    organizer: Participant submission (Lovleen Kaur / Jasmeen Kaur)
+    location: San Francisco, CA
+    online: false
+    dates: "2025-11-15"
+    challenge_or_submission: Shop the Video
+    url: https://devpost.com/software/shop-the-video
+    date_accessed: "2026-10-03"
+    evidence_kind: participant_reported
+    paraphrase: >
+      Participant-reported project that identifies products from video, compares
+      prices, and generates affiliate links using multi-agent pipeline (SmolVLM,
+      Browser Use, Daytona sandbox). Performance metrics (accuracy, latency, cost)
+      are participant-reported and not independently verified.
+    required_sponsor_technology: []
+    optional_or_preferred_technology:
+      - Daytona
+      - Browser Use
+      - OpenAI
+    available_participant_resources: unknown
+    winner_prizes: []
+    unknown_or_inaccessible:
+      - Independent verification of claimed accuracy/latency/cost
+      - Permission to reuse participant code/datasets (not reused here)
+    informed_evaluation_task:
+      - visual_product_matching (synthetic frozen fixtures; no affiliate actions)

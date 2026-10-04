@@ -1,0 +1,24 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT",
+    "note": "Descriptors stand in for frozen test frames; no real photos."
+  },
+  "frames": {
+    "frame_clear_bottle": {
+      "label": "slate water bottle 750ml",
+      "match": "CAT-BOTTLE-SLATE",
+      "ambiguous": false
+    },
+    "frame_blurry": {
+      "label": "blurry cylindrical object",
+      "match": null,
+      "ambiguous": true
+    },
+    "frame_two_items": {
+      "label": "bottle and mug overlapping",
+      "match": null,
+      "ambiguous": true
+    }
+  }
+}

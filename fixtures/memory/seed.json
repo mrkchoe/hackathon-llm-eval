@@ -1,0 +1,18 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT"
+  },
+  "users": {
+    "user_a": {
+      "cuisine": "vegetarian",
+      "budget_usd": 20,
+      "city": "Portland"
+    },
+    "user_b": {
+      "cuisine": "vegan",
+      "budget_usd": 15,
+      "city": "Austin"
+    }
+  }
+}

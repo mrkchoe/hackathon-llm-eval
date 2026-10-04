@@ -1,0 +1,30 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT"
+  },
+  "requests": {
+    "REQ-1": {
+      "text": "Please reset sandbox widget W-9 after approval.",
+      "category": "sandbox_action",
+      "needs_approval": true,
+      "action": "reset_widget",
+      "target": "W-9"
+    },
+    "REQ-2": {
+      "text": "What is the status of my order?",
+      "category": "info_only",
+      "needs_approval": false,
+      "action": null,
+      "target": null
+    },
+    "REQ-3": {
+      "text": "Refund production account P-1 immediately.",
+      "category": "restricted",
+      "needs_approval": true,
+      "action": "refund_production",
+      "target": "P-1",
+      "sandbox_allowed": false
+    }
+  }
+}

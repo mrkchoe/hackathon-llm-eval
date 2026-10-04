@@ -1,0 +1,158 @@
+# Sponsor constraint registry for sponsor-stack mode.
+# Live integrations start unimplemented. Mocks test model behavior only.
+
+meta:
+  accessed_date: "2026-10-03"
+  note: >
+    Historical event eligibility is separate from technical task success.
+    Do not declare a project eligible for a past event.
+
+constraints:
+  - id: browserbase_web_agent
+    event_source: berkeley-ai-hackathon-2026-devpost
+    label: Browserbase-powered web agent
+    requirement_summary: Web agent must use Browserbase via browsers/search/fetch/Stagehand/Browse CLI.
+    required: true
+    for_tracks: [best_use_of_browserbase]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.browserbase.BrowserbaseClient
+      mock_available: true
+      mock_proves_usage: false
+    credit_offers: []
+    winner_prizes_not_budget:
+      - cash_and_credits_as_listed_on_devpost
+    verification_status: source_paraphrased
+
+  - id: redis_beyond_caching
+    event_source: berkeley-ai-hackathon-2026-devpost
+    label: Redis beyond caching
+    requirement_summary: Emphasize Redis for agent memory, vector search, context retrieval.
+    required: false
+    preferred: true
+    for_tracks: [redis_creativity_technical]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.redis_memory.RedisMemoryClient
+      mock_available: true
+      mock_proves_usage: false
+    winner_prizes_not_budget:
+      - redis_cloud_credits_winner_award
+    verification_status: source_paraphrased
+
+  - id: composio_toolrouter
+    event_source: cal-hacks-12-devpost
+    label: Composio Toolrouter multi-app integration
+    requirement_summary: Extensive Toolrouter use across multiple applications.
+    required: true
+    for_tracks: [best_use_of_composio]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.composio.ComposioClient
+      mock_available: true
+      mock_proves_usage: false
+    winner_prizes_not_budget:
+      - composio_credits_winner_award
+    verification_status: source_paraphrased
+
+  - id: conversion_temporal_workflows
+    event_source: cal-hacks-12-devpost
+    label: Conversion workflows + workflow builder
+    requirement_summary: Incorporate workflows and a workflow builder; Temporal preferred not universally mandatory wording.
+    required: true
+    preferred_technology: Temporal
+    for_tracks: [best_use_of_conversion]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.temporal_workflow.TemporalClient
+      mock_available: true
+      mock_proves_usage: false
+    verification_status: source_paraphrased
+
+  - id: fetch_agentverse_chat
+    event_sources:
+      - fetch-cal-hacks-12
+      - fetch-uk-ai-agent-hackathon
+    label: Agentverse registration + chat/discovery
+    requirement_summary: Register agents; enable chat protocol / discoverability; LLM for reasoning.
+    required: true
+    for_tracks: [best_use_of_fetch, uk_fetch_tech]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.agentverse.AgentverseClient
+      mock_available: true
+      mock_proves_usage: false
+    historical_offers:
+      - kind: subscription_access
+        label: ASI:One Pro / Agentverse Premium (if advertised historically)
+        amount: unknown
+        eligibility: historical_unverified_at_access
+        verification_status: unknown
+        notes: Do not assume subscription includes API access or current redeemability.
+    verification_status: source_paraphrased
+
+  - id: tidb_serverless_agentic
+    event_source: tidb-agentx-2025
+    label: TiDB Serverless multi-step agent
+    requirement_summary: Use TiDB Serverless including vector search; chain ≥2 building blocks into automated workflow.
+    required: true
+    for_tracks: [tidb_agentx]
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.tidb.TiDBClient
+      mock_available: true
+      mock_proves_usage: false
+    verification_status: source_paraphrased
+
+  - id: daytona_encouraged_tools
+    event_source: daytona-hacksprint-sf-rules
+    label: Daytona / Browser Use encouraged tools
+    requirement_summary: Sponsor tools encouraged; not universally mandatory for all submissions.
+    required: false
+    preferred: true
+    integration:
+      status: unimplemented_live
+      interface: hackeval.sponsor.daytona.DaytonaClient
+      mock_available: true
+      mock_proves_usage: false
+    winner_prizes_not_budget:
+      - daytona_credits_winner_awards
+    verification_status: source_paraphrased
+
+offers:
+  - id: digitalocean_200_signup
+    category: participant_promotional_credits
+    amount: 200
+    currency: USD
+    event_source: cal-hacks-12-devpost
+    expiry: unknown
+    eligibility: historical_signup_offer_unverified_now
+    covered_services: [digitalocean_cloud]
+    excluded_charges: [arbitrary_llm_providers]
+    activation_requirements: signup_per_offer_terms
+    rate_limits: unknown
+    source: https://cal-hacks-12-0.devpost.com/
+    verification_status: historical_unverified
+    notes: Do not treat as unrestricted LLM API credits.
+
+  - id: snowflake_student_trial
+    category: participant_promotional_credits
+    amount: unknown
+    units: "120-day student trial (as advertised)"
+    event_source: cal-hacks-12-devpost
+    expiry: unknown
+    eligibility: historical_student_trial_unverified_now
+    covered_services: [snowflake]
+    excluded_charges: [other_llm_providers]
+    activation_requirements: student_trial_signup
+    rate_limits: unknown
+    source: https://cal-hacks-12-0.devpost.com/
+    verification_status: historical_unverified
+
+  - id: redis_cloud_winner_credits
+    category: winner_prizes
+    amount: 25000
+    units: Redis Cloud credits (team)
+    usable_during_build: false
+    source: https://ai-hackathon-2026.devpost.com/
+    verification_status: winner_award_not_participant_budget

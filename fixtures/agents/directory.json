@@ -1,0 +1,29 @@
+{
+  "provenance": {
+    "kind": "synthetic_original",
+    "license": "MIT"
+  },
+  "agents": [
+    {
+      "id": "agent_scheduler",
+      "skills": [
+        "scheduling"
+      ],
+      "timezone": "America/Los_Angeles"
+    },
+    {
+      "id": "agent_research",
+      "skills": [
+        "research"
+      ],
+      "timezone": "UTC"
+    },
+    {
+      "id": "agent_billing",
+      "skills": [
+        "billing"
+      ],
+      "timezone": "UTC"
+    }
+  ]
+}
