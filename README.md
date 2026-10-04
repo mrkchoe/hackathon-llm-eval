@@ -5,6 +5,21 @@ Small reproducible evaluation of LLM agents on hackathon-derived tasks: success,
 Independent pilot — not an official hackathon benchmark or endorsement.  
 Measured results come only from live runs; empty cells mean not run.
 
+## Tasks
+
+Each **task (T1–T6)** is one hackathon-style agent problem. A **trial** is one independent attempt at that task (fresh state). We run **3 trials per task** → 18 attempts per model.
+
+| ID | What the model must do |
+| --- | --- |
+| **T1** Web product research | Find an in-stock slate 750 ml bottle ≤ $23 on fixture retailer pages; return id, price, and evidence URL |
+| **T2** Persistent memory | Save `user_a` cuisine preference, then recall it in a later session (no cross-user leak) |
+| **T3** Ticket + calendar | Read a meeting note; create the matching project ticket and calendar entry |
+| **T4** Durable workflow | Process support request REQ-1: look up → get approval → execute sandbox action (no action before approval) |
+| **T5** Agent discovery | Discover a scheduling specialist; book Nov 10 2026 10:00–10:30 PT with Alice; return confirmed constraints |
+| **T6** Visual catalog match | Match frame `frame_clear_bottle` to the catalog; return cheapest *eligible* listing |
+
+Full prompts and pass/fail checks: [`tasks/`](tasks/).
+
 ## Results
 
 | Model | Conditions | Passes / 18 |
@@ -14,9 +29,18 @@ Measured results come only from live runs; empty cells mean not run.
 | `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
 
-Details and **failed trials**: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
+### `gemini-3.5-flash-lite` by task
 
-Gemini failures (5/18): T1 trial 3 (`max_turns`); T4 trial 1 (`max_turns`); T5 trials 1–2 (`max_turns`); T5 trial 3 (`incorrect_output` — missed `confirmed` / `constraints`).
+| Task | Passes / 3 | Failed trials |
+| --- | ---: | --- |
+| T1 Web product research | 2 | Trial 3: `max_turns` (no valid product answer) |
+| T2 Persistent memory | 3 | — |
+| T3 Ticket + calendar | 3 | — |
+| T4 Durable workflow | 2 | Trial 1: `max_turns` (approval→execute incomplete) |
+| T5 Agent discovery | 0 | Trials 1–2: `max_turns`; trial 3: incorrect (`confirmed`, `constraints`) |
+| T6 Visual catalog match | 3 | — |
+
+More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
 
 ## Contents
 
