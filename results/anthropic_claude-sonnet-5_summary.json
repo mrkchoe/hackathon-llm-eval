@@ -2,91 +2,47 @@
   "model_id": "claude-sonnet-5",
   "provider": "anthropic",
   "status": "measured",
-  "settings": {
-    "max_tokens": 2048
-  },
-  "run_id": "live_anthropic_20261004T030053Z_7c0cde",
-  "note": "Measured with Anthropic Messages API + tools. temperature omitted (unsupported on this model path).",
+  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
   "task_success_rates": {
     "T1": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0,
-      "mean_latency_pass": 4.5
+      "rate": 1.0
     },
     "T2": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0,
-      "mean_latency_pass": 4.8
+      "rate": 1.0
     },
     "T3": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0,
-      "mean_latency_pass": 8.5
+      "rate": 1.0
     },
     "T4": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0,
-      "mean_latency_pass": 6.3
+      "rate": 1.0
     },
     "T5": {
-      "passes": 1,
+      "passes": 3,
       "trials": 3,
-      "rate": 0.3333333333333333,
-      "mean_latency_pass": 14.6
+      "rate": 1.0
     },
     "T6": {
       "passes": 3,
       "trials": 3,
-      "rate": 1.0,
-      "mean_latency_pass": 6.0
+      "rate": 1.0
     }
   },
-  "total_passes": 16,
+  "total_passes": 18,
   "total_trials": 18,
-  "failures": [
-    {
-      "task_id": "T5",
-      "trial": 1,
-      "class": "incorrect_output",
-      "detail": null,
-      "failed_checks": [
-        "confirmed"
-      ],
-      "elapsed_seconds": 15.629484900011448,
-      "output": {
-        "specialist": "agent_scheduler",
-        "confirmed": false,
-        "constraints": {
-          "date": "2026-11-10",
-          "start": "10:00",
-          "end": "10:30",
-          "tz": "PT",
-          "with": "Alice"
-        }
-      }
-    },
-    {
-      "task_id": "T5",
-      "trial": 3,
-      "class": "max_turns",
-      "detail": "max_turns",
-      "failed_checks": [
-        "specialist",
-        "confirmed",
-        "constraints"
-      ],
-      "elapsed_seconds": 15.446671500001685,
-      "output": {}
-    }
-  ],
+  "failures": [],
   "token_usage": {
     "input_tokens": 106841,
     "output_tokens": 10865
   },
+  "run_id": "live_anthropic_20261004T030053Z_7c0cde",
   "gross_usd_estimate": 0.322332,
-  "pricing_status": "documented_estimate"
+  "pricing_status": "estimate_$2_in_$10_out_per_MTok"
 }

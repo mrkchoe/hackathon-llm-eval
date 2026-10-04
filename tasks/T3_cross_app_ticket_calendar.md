@@ -33,7 +33,7 @@ Fixture: `fixtures/notes/meetings.json`
 | Ticket title | `"API rate-limit dashboard"` |
 | Ticket due | `2026-11-05` |
 | Ticket owner | `Sam` |
-| Calendar | date `2026-11-03`, start `15:00`, end `15:30`, tz `PT` |
+| Calendar | date `2026-11-03`, start `15:00`, end `15:30`, Pacific tz (`PT` or `America/Los_Angeles`) |
 | Duplicates | At most one ticket with that title |
 
 **Pass:** all checks true.

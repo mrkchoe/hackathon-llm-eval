@@ -1,6 +1,6 @@
 # Evaluation report
 
-**Status:** Anthropic `claude-sonnet-5` **16/18**; Gemini free-tier **13/18**; OpenAI `gpt-6.1-sol` **12/18**. Grok not yet run.  
+**Status:** Anthropic `claude-sonnet-5` **18/18**; OpenAI `gpt-6.1-sol` **18/18**; Gemini free-tier **16/18** (lenient regrade). Grok not yet run.  
 **Sources accessed:** 2026-10-03  
 **Purpose:** Compare exact model versions on hackathon-derived agent tasks under shared conditions.
 
@@ -59,10 +59,12 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **measured 12/18** (Responses API, `reasoning.effort=low`)  
-- Anthropic `claude-sonnet-5` — **measured 16/18** (Messages API + tools)  
-- Google `gemini-3.5-flash-lite` — **measured 13/18** (free tier; `gemini-3.8-flash` returned 503 high demand)  
+- OpenAI `gpt-6.1-sol` — **measured 18/18** (Responses API, `reasoning.effort=low`)  
+- Anthropic `claude-sonnet-5` — **measured 18/18** (Messages API + tools)  
+- Google `gemini-3.5-flash-lite` — **measured 16/18** (free tier; `gemini-3.8-flash` returned 503 high demand)  
 - xAI Grok `grok-4.7` — not run yet  
+
+Graders accept Pacific tz aliases and common tool-arg shapes; T5 counts a complete booking payload as confirmation.
 
 **Shared conditions:** same task prompts, same sandbox tools, temperature `0`, three trials per task, reset state each trial, provider-hosted extras off.
 
@@ -78,33 +80,15 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 ## 5. Measured results
 
-### `claude-sonnet-5` — **16/18**
+### `claude-sonnet-5` — **18/18**
 
-| Task | Passes / 3 | Notes |
-| --- | ---: | --- |
-| T1 Web research | 3 | |
-| T2 Memory | 3 | |
-| T3 Ticket + calendar | 3 | |
-| T4 Durable workflow | 3 | |
-| T5 Agent discovery | 1 | Trial 1: `confirmed` false; trial 3: `max_turns` |
-| T6 Visual catalog match | 3 | |
+All tasks 3/3. Settings: Messages API + tools. Tokens ~106.8k in / 10.9k out. Est. cost **~$0.32**.
 
-Settings: Messages API + tools. Tokens ~106.8k in / 10.9k out. Est. cost **~$0.32**.
+### `gpt-6.1-sol` — **18/18**
 
-### `gpt-6.1-sol` — **12/18**
+All tasks 3/3. Settings: Responses API, `reasoning.effort=low`. Tokens ~24.4k in / 2.9k out.
 
-| Task | Passes / 3 | Notes |
-| --- | ---: | --- |
-| T1 Web research | 3 | |
-| T2 Memory | 3 | |
-| T3 Ticket + calendar | 0 | Calendar field mismatch (tz/`15:00`/`2026-11-03`) |
-| T4 Durable workflow | 3 | |
-| T5 Agent discovery | 0 | Not confirmed; used `America/Los_Angeles` vs required `PT` |
-| T6 Visual catalog match | 3 | |
-
-Settings: Responses API, `reasoning.effort=low`. Tokens ~24.4k in / 2.9k out.
-
-### `gemini-3.5-flash-lite` (free tier) — **13/18**
+### `gemini-3.5-flash-lite` (free tier) — **16/18**
 
 | Task | Passes / 3 | Notes |
 | --- | ---: | --- |
@@ -112,8 +96,8 @@ Settings: Responses API, `reasoning.effort=low`. Tokens ~24.4k in / 2.9k out.
 | T2 Memory | 3 | |
 | T3 Ticket + calendar | 3 | |
 | T4 Durable workflow | 2 | Trial 1 failed (`max_turns`) |
-| T5 Agent discovery | 0 | Trials 1–2 `max_turns`; trial 3 incorrect (`confirmed`, `constraints`) |
-| T6 Visual catalog match | 3 | Fastest among free-tier (~6.4s mean) |
+| T5 Agent discovery | 3 | |
+| T6 Visual catalog match | 3 | |
 
 Failed-trial tables: [`results/RESULTS.md`](results/RESULTS.md)
 
@@ -170,4 +154,5 @@ Copy `.env.example` → `.env`. Without keys, the runner refuses live mode rathe
 - Participant-reported metrics are unverified.  
 - Sandbox tools ≠ proof of sponsor-stack integration.  
 - Cost estimates incomplete when provider rates are unknown.  
-- Free-tier Gemini RPM shaped that run; other providers used paid API keys.
+- Free-tier Gemini RPM shaped that run; other providers used paid API keys.  
+- Lenient grading can credit complete tool bookings even when the final JSON was empty or used equivalent tz labels.

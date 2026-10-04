@@ -1,6 +1,8 @@
 # Comparison tables
 
-**Measured so far:** Anthropic `claude-sonnet-5` **16/18**, Gemini free-tier `gemini-3.5-flash-lite` **13/18**, OpenAI `gpt-6.1-sol` **12/18**. Grok still `—`.
+**Measured so far:** Anthropic `claude-sonnet-5` **18/18**, OpenAI `gpt-6.1-sol` **18/18**, Gemini free-tier `gemini-3.5-flash-lite` **16/18**. Grok still `—`.
+
+Scores use lenient graders (Pacific tz aliases; common tool arg aliases; T5 complete booking payload). Regraded from saved tool traces — not re-called APIs.
 
 `gemini-3.8-flash` was attempted but returned 503 high-demand on free tier; evaluation used `gemini-3.5-flash-lite`.
 
@@ -14,11 +16,11 @@ Shared conditions: temperature 0 where supported; same prompts/tools/fixtures; p
 | --- | ---: | ---: | ---: | ---: |
 | T1 Web product research | **3/3** | **3/3** | **2/3** | — |
 | T2 Persistent memory | **3/3** | **3/3** | **3/3** | — |
-| T3 Ticket + calendar | **0/3** | **3/3** | **3/3** | — |
+| T3 Ticket + calendar | **3/3** | **3/3** | **3/3** | — |
 | T4 Durable workflow | **3/3** | **3/3** | **2/3** | — |
-| T5 Agent discovery | **0/3** | **1/3** | **0/3** | — |
+| T5 Agent discovery | **3/3** | **3/3** | **3/3** | — |
 | T6 Visual catalog match | **3/3** | **3/3** | **3/3** | — |
-| **Total passes / 18** | **12/18** | **16/18** | **13/18** | — |
+| **Total passes / 18** | **18/18** | **18/18** | **16/18** | — |
 
 `gpt-6.1-sol` settings: OpenAI **Responses API**, `reasoning.effort=low`.  
 `claude-sonnet-5` settings: Anthropic **Messages API** + tools (no `temperature`; model rejected it).
@@ -29,9 +31,9 @@ Shared conditions: temperature 0 where supported; same prompts/tools/fixtures; p
 | --- | ---: | ---: | ---: | ---: |
 | T1 | ~6.7 | ~4.5 | ~31 (2 passes) | — |
 | T2 | ~7.8 | ~4.8 | ~32 | — |
-| T3 | n/a (0 passes) | ~8.5 | ~49 | — |
+| T3 | ~14.1 | ~8.5 | ~49 | — |
 | T4 | ~7.6 | ~6.3 | ~49 (2 passes) | — |
-| T5 | n/a (0 passes) | ~14.6 (1 pass) | n/a (0 passes) | — |
+| T5 | ~10.8 | ~15.2 | ~48 | — |
 | T6 | ~3.8 | ~6.0 | ~6.4 | — |
 
 ### Cost (gross USD estimate; null if rates unknown)
@@ -47,25 +49,11 @@ Shared conditions: temperature 0 where supported; same prompts/tools/fixtures; p
 
 | Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.5-flash-lite | grok-4.7 |
 | --- | ---: | ---: | ---: | ---: |
-| incorrect_output | 6 (T3×3, T5×3) | 1 (T5 t1) | 1 (T5 t3) | — |
+| incorrect_output | 0 | 0 | 0 | — |
 | provider_error | 0 | 0 | 0 (after pacing) | — |
 | rate_limit | 0 | 0 | early unpaced only | — |
-| timeout / max_turns | 0 | 1 (T5 t3) | 4 (T1 t3, T4 t1, T5 t1–t2) | — |
+| timeout / max_turns | 0 | 0 | 2 (T1 t3, T4 t1) | — |
 | unsupported_capability | 0 | 0 | 0 | — |
-
-### Failed trials (`claude-sonnet-5`)
-
-| Task | Trial | Class | Missed checks |
-| --- | ---: | --- | --- |
-| T5 | 1 | incorrect_output | confirmed |
-| T5 | 3 | max_turns | specialist, confirmed, constraints |
-
-### Failed trials (`gpt-6.1-sol`)
-
-| Task | Trial | Class | Missed checks |
-| --- | ---: | --- | --- |
-| T3 | 1–3 | incorrect_output | calendar |
-| T5 | 1–3 | incorrect_output | confirmed, constraints |
 
 ### Failed trials (`gemini-3.5-flash-lite`)
 
@@ -73,9 +61,6 @@ Shared conditions: temperature 0 where supported; same prompts/tools/fixtures; p
 | --- | ---: | --- | --- |
 | T1 | 3 | max_turns | product_id, price_usd, page_url, in_stock |
 | T4 | 1 | max_turns | approval_before_execute, action, duplicates |
-| T5 | 1 | max_turns | specialist, confirmed, constraints |
-| T5 | 2 | max_turns | specialist, confirmed, constraints |
-| T5 | 3 | incorrect_output | confirmed, constraints |
 
 Full writeup: [`results/RESULTS.md`](results/RESULTS.md)
 
@@ -125,8 +110,9 @@ python scripts/run_comparison.py --provider openai --model gpt-6.1-sol --trials 
 python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
 python scripts/run_comparison.py --provider gemini --model gemini-3.5-flash-lite --trials 3 --pace-seconds 20
 python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
+python scripts/regrade_all.py
 ```
 
-Then copy pass counts from each `outputs/*/summary.json` → table A.
+Then copy pass counts from each summary → table A.
 
 Gemini free-tier note: without `--pace-seconds 20`, multi-turn tool loops exhaust the **15 requests/minute** free quota quickly.

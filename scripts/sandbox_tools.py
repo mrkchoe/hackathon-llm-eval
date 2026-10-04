@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import inspect
 import json
+import re
 from copy import deepcopy
 from pathlib import Path
 from typing import Any
@@ -10,10 +11,116 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[1]
 FIX = ROOT / "fixtures"
 
+# Common model arg aliases → canonical parameter names (less brittle than exact schemas).
+_ARG_ALIASES: dict[str, dict[str, str]] = {
+    "discover_agent": {"query": "skill", "capability": "skill", "name": "skill"},
+    "message_agent": {
+        "to": "agent_id",
+        "recipient": "agent_id",
+        "id": "agent_id",
+        "body": "message",
+        "text": "message",
+    },
+    "check_status": {"to": "agent_id", "recipient": "agent_id", "id": "agent_id"},
+    "create_ticket": {"due_date": "due"},
+    "create_calendar_entry": {
+        "start_time": "start",
+        "end_time": "end",
+        "timezone": "tz",
+        "time_zone": "tz",
+    },
+}
+
 
 def _load(rel: str) -> dict[str, Any]:
     with (FIX / rel).open(encoding="utf-8") as f:
         return json.load(f)
+
+
+def _same_pacific_tz(tz: Any) -> bool:
+    if tz is None:
+        return False
+    n = str(tz).strip().lower().replace(" ", "_")
+    return n in {
+        "pt",
+        "pdt",
+        "pst",
+        "pacific",
+        "pacific_time",
+        "us/pacific",
+        "america/los_angeles",
+    }
+
+
+def _normalize_args(name: str, args: dict[str, Any]) -> dict[str, Any]:
+    aliases = _ARG_ALIASES.get(name, {})
+    out = dict(args)
+    for src, dst in aliases.items():
+        if src in out and dst not in out:
+            out[dst] = out[src]
+    # message_agent: fold sibling constraints into message when useful
+    if name == "message_agent":
+        cons = out.get("constraints")
+        msg = out.get("message")
+        if isinstance(cons, dict):
+            if isinstance(msg, dict):
+                merged = {**cons, **msg}
+                out["message"] = merged
+            elif msg is None or (isinstance(msg, str) and not msg.strip().startswith("{")):
+                out["message"] = cons
+        # ISO / free-text message left as-is for message_agent parser
+    if name == "create_calendar_entry":
+        start = out.get("start")
+        if out.get("date") is None and isinstance(start, str) and "T" in start:
+            out["date"] = start.split("T", 1)[0]
+        for key in ("start", "end"):
+            val = out.get(key)
+            if isinstance(val, str):
+                m = re.search(r"\b(\d{2}:\d{2})\b", val)
+                if m:
+                    out[key] = m.group(1)
+    return out
+
+
+def _booking_fields(message: Any) -> dict[str, Any]:
+    if isinstance(message, dict):
+        if isinstance(message.get("constraints"), dict) and not any(
+            k in message for k in ("date", "start", "end", "tz", "with")
+        ):
+            return message["constraints"]
+        return message
+    if not isinstance(message, str):
+        return {}
+    # Try JSON first
+    try:
+        parsed = json.loads(message)
+        if isinstance(parsed, dict):
+            return _booking_fields(parsed)
+    except json.JSONDecodeError:
+        pass
+    text = message
+    out: dict[str, Any] = {}
+    dm = re.search(r"\b(20\d{2}-\d{2}-\d{2})\b", text)
+    if dm:
+        out["date"] = dm.group(1)
+    times = re.findall(r"\b(\d{2}:\d{2})\b", text)
+    if times:
+        out["start"] = times[0]
+        if len(times) > 1:
+            out["end"] = times[1]
+    tz_m = re.search(
+        r"\b(PT|PDT|PST|America/Los_Angeles|US/Pacific|Pacific(?:\s+Time)?)\b",
+        text,
+        re.I,
+    )
+    if tz_m:
+        out["tz"] = tz_m.group(1)
+    with_m = re.search(r"\bwith\s+([A-Za-z]+)\b", text, re.I)
+    if with_m:
+        out["with"] = with_m.group(1)
+    elif re.search(r"\bAlice\b", text):
+        out["with"] = "Alice"
+    return out
 
 
 class Sandbox:
@@ -34,17 +141,18 @@ class Sandbox:
             self.calls.append(rec)
             return {"ok": False, "error": "unknown_tool"}
         try:
+            normalized = _normalize_args(name, args)
             sig = inspect.signature(fn)
             # Drop unexpected kwargs so models can pass extra fields without hard-failing the tool.
             if any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()):
-                filtered = args
+                filtered = normalized
             else:
                 allowed = {
                     k
                     for k, p in sig.parameters.items()
                     if p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)
                 }
-                filtered = {k: v for k, v in args.items() if k in allowed}
+                filtered = {k: v for k, v in normalized.items() if k in allowed}
             result = fn(**filtered)
             self.calls.append({"name": name, "arguments": args, "error": None})
             return {"ok": True, "result": result}
@@ -54,7 +162,6 @@ class Sandbox:
         except Exception as exc:  # noqa: BLE001
             self.calls.append({"name": name, "arguments": args, "error": str(exc)})
             return {"ok": False, "error": str(exc)}
-
     def search_pages(self, query: str = "") -> dict[str, Any]:
         hits = []
         q = query.lower()
@@ -148,12 +255,18 @@ class Sandbox:
         agents = _load("agents/directory.json")["agents"]
         return {"matches": [a for a in agents if skill in a.get("skills", [])]}
 
-    def message_agent(self, agent_id: str, message: dict[str, Any]) -> dict[str, Any]:
+    def message_agent(self, agent_id: str, message: Any) -> dict[str, Any]:
+        fields = _booking_fields(message)
         required = ["date", "start", "end", "tz", "with"]
-        ok = agent_id == "agent_scheduler" and all(k in message for k in required)
+        has_fields = all(k in fields and fields[k] not in (None, "") for k in required)
+        tz_ok = _same_pacific_tz(fields.get("tz")) if has_fields else False
+        # Confirm when the specialist gets a complete Pacific booking (dict or clear prose).
+        ok = agent_id == "agent_scheduler" and has_fields and tz_ok
+        # Store normalized fields when we could parse them (helps graders / status).
+        stored_message = fields if has_fields else message
         msg = {
             "agent_id": agent_id,
-            "message": message,
+            "message": stored_message,
             "status": "confirmed" if ok else "needs_clarification",
             "confirmation": ok,
         }

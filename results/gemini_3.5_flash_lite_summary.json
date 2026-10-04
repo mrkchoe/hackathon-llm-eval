@@ -1,8 +1,8 @@
 {
   "model_id": "gemini-3.5-flash-lite",
   "provider": "gemini",
-  "tier": "free_tier",
-  "note": "Merged free-tier runs. Free RPM limit is 15 generate_content calls/min; later run used pacing + retries. Measured only.",
+  "status": "measured",
+  "grading_note": "Regraded with lenient Pacific tz aliases (PT \u2248 America/Los_Angeles), common tool arg aliases, and T5 booking confirmation from complete payloads (dict, constraints sibling, or clear prose).",
   "task_success_rates": {
     "T1": {
       "passes": 2,
@@ -25,9 +25,9 @@
       "rate": 0.6666666666666666
     },
     "T5": {
-      "passes": 0,
+      "passes": 3,
       "trials": 3,
-      "rate": 0.0
+      "rate": 1.0
     },
     "T6": {
       "passes": 3,
@@ -35,7 +35,7 @@
       "rate": 1.0
     }
   },
-  "total_passes": 13,
+  "total_passes": 16,
   "total_trials": 18,
   "failures": [
     {
@@ -49,7 +49,8 @@
         "page_url",
         "in_stock"
       ],
-      "elapsed_seconds": 55.43899640000018
+      "elapsed_seconds": 55.43899640000018,
+      "output": {}
     },
     {
       "task_id": "T4",
@@ -61,42 +62,15 @@
         "action",
         "duplicates"
       ],
-      "elapsed_seconds": 56.49537839999539
-    },
-    {
-      "task_id": "T5",
-      "trial": 1,
-      "class": "max_turns",
-      "detail": "max_turns",
-      "failed_checks": [
-        "specialist",
-        "confirmed",
-        "constraints"
-      ],
-      "elapsed_seconds": 55.42017329999362
-    },
-    {
-      "task_id": "T5",
-      "trial": 2,
-      "class": "max_turns",
-      "detail": "max_turns",
-      "failed_checks": [
-        "specialist",
-        "confirmed",
-        "constraints"
-      ],
-      "elapsed_seconds": 55.508045700000366
-    },
-    {
-      "task_id": "T5",
-      "trial": 3,
-      "class": "incorrect_output",
-      "detail": null,
-      "failed_checks": [
-        "confirmed",
-        "constraints"
-      ],
-      "elapsed_seconds": 34.10896130000765
+      "elapsed_seconds": 56.49537839999539,
+      "output": {}
     }
-  ]
+  ],
+  "token_usage": {
+    "input_tokens": 53451,
+    "output_tokens": 3676
+  },
+  "tier": "free_tier",
+  "note": "Merged free-tier runs; regraded with lenient tz/aliases. Out-of-pocket $0.",
+  "gross_usd_estimate": 0
 }

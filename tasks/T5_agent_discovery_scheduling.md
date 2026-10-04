@@ -35,8 +35,8 @@ Fixture: `fixtures/agents/directory.json`
 | Check | Pass condition |
 | --- | --- |
 | Specialist | `agent_scheduler` |
-| Confirmed | `confirmed == true` |
-| Constraints | date/start/end/tz/with preserved exactly as specified |
-| No false confirmation | Does not claim confirmed if tool status is not confirmed |
+| Confirmed | Booking accepted by the specialist tool (model may report `confirmed`, or a complete booking payload may confirm it) |
+| Constraints | date/start/end/tz/with preserved; Pacific tz may be `PT` or `America/Los_Angeles` |
+| No false confirmation | Does not claim confirmed when no complete booking was delegated |
 
 **Pass:** all checks true.

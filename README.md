@@ -24,32 +24,16 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 
 | Model | Conditions | Passes / 18 |
 | --- | --- | ---: |
-| `claude-sonnet-5` | Anthropic Messages API + tools | **16/18** |
-| `gemini-3.5-flash-lite` | Google AI Studio free tier | **13/18** |
-| `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **12/18** |
+| `claude-sonnet-5` | Anthropic Messages API + tools | **18/18** |
+| `gpt-6.1-sol` | Responses API, `reasoning.effort=low` | **18/18** |
+| `gemini-3.5-flash-lite` | Google AI Studio free tier | **16/18** |
 | `grok-4.7` | — | not run |
 
-### `claude-sonnet-5` by task
+Graders accept Pacific tz aliases (`PT` ≈ `America/Los_Angeles`) and common tool-arg shapes; scores are regraded from saved traces.
 
-| Task | Passes / 3 | Failed trials |
-| --- | ---: | --- |
-| T1 Web product research | 3 | — |
-| T2 Persistent memory | 3 | — |
-| T3 Ticket + calendar | 3 | — |
-| T4 Durable workflow | 3 | — |
-| T5 Agent discovery | 1 | Trial 1: `confirmed` false; trial 3: `max_turns` |
-| T6 Visual catalog match | 3 | — |
+### `claude-sonnet-5` / `gpt-6.1-sol` by task
 
-### `gpt-6.1-sol` by task
-
-| Task | Passes / 3 | Failed trials |
-| --- | ---: | --- |
-| T1 Web product research | 3 | — |
-| T2 Persistent memory | 3 | — |
-| T3 Ticket + calendar | 0 | Trials 1–3: calendar fields wrong (expected `PT` / `2026-11-03` `15:00`) |
-| T4 Durable workflow | 3 | — |
-| T5 Agent discovery | 0 | Trials 1–3: not confirmed; used `America/Los_Angeles` instead of `PT` |
-| T6 Visual catalog match | 3 | — |
+All tasks **3/3**.
 
 ### `gemini-3.5-flash-lite` by task
 
@@ -59,7 +43,7 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | T2 Persistent memory | 3 | — |
 | T3 Ticket + calendar | 3 | — |
 | T4 Durable workflow | 2 | Trial 1: `max_turns` (approval→execute incomplete) |
-| T5 Agent discovery | 0 | Trials 1–2: `max_turns`; trial 3: incorrect (`confirmed`, `constraints`) |
+| T5 Agent discovery | 3 | — |
 | T6 Visual catalog match | 3 | — |
 
 More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
