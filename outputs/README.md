@@ -1,7 +1,5 @@
-# Outputs
+# Local raw outputs
 
-Live comparison artifacts are written here as `outputs/<run_id>/trials.jsonl` and `summary.json`.
+Live `trials.jsonl` / `summary.json` files are written here and gitignored.
 
-Nothing in this folder should be treated as results until those files exist from a real `--provider` run.
-
-Reference-check mode does **not** write model comparison results here.
+Published measured summaries are copied to [`../results/`](../results/).
