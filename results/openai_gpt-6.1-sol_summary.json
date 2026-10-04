@@ -1,0 +1,17 @@
+{
+  "model_id": "gpt-6.1-sol",
+  "provider": "openai",
+  "status": "blocked_insufficient_quota",
+  "note": "API key authenticated, but organization has zero remaining credits (credit_balance_exhausted). Full 6x3 evaluation was not run. This is not a task-performance score.",
+  "attempted": {
+    "run_id": "live_openai_20261004T023501Z_c38924",
+    "task_id": "T1",
+    "trial": 1,
+    "success": false,
+    "failure_class": "insufficient_quota",
+    "elapsed_seconds": 4.01
+  },
+  "total_passes": null,
+  "total_trials": null,
+  "task_success_rates": null
+}

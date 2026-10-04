@@ -59,7 +59,7 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — not run yet  
+- OpenAI `gpt-6.1-sol` — **blocked**: key OK, `credit_balance_exhausted` on smoke T1 (not scored)  
 - Anthropic `claude-sonnet-5` — not run yet  
 - Google `gemini-3.5-flash-lite` — **measured** (free tier; `gemini-3.8-flash` returned 503 high demand)  
 - xAI Grok `grok-4.7` — not run yet  

@@ -7,11 +7,12 @@ Only live API runs are recorded here. Models marked “not run” were not evalu
 | Model | Conditions | Passes / trials |
 | --- | --- | ---: |
 | `gemini-3.5-flash-lite` | Free tier, temp 0, 3 trials/task, paced | **13 / 18** |
-| `gpt-6.1-sol` | — | not run |
+| `gpt-6.1-sol` | Key present; **no API credits** | blocked (not scored) |
 | `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
 
-Machine-readable: [`gemini_3.5_flash_lite_summary.json`](gemini_3.5_flash_lite_summary.json)
+Machine-readable: [`gemini_3.5_flash_lite_summary.json`](gemini_3.5_flash_lite_summary.json) · [`openai_gpt-6.1-sol_summary.json`](openai_gpt-6.1-sol_summary.json)
+
 
 ## `gemini-3.5-flash-lite` per task
 
@@ -37,6 +38,7 @@ Machine-readable: [`gemini_3.5_flash_lite_summary.json`](gemini_3.5_flash_lite_s
 | T5 Agent discovery | 3 | `incorrect_output` | Finished a response but failed checks: `confirmed`, `constraints` (specialist check passed) |
 
 ### Notes
-- An earlier unpaced run also hit free-tier **429** (15 RPM). Those rate-limit attempts were superseded by paced retries and are not counted above.
-- Out-of-pocket cost: **$0** (free tier).
+- An earlier unpaced Gemini run also hit free-tier **429** (15 RPM). Those rate-limit attempts were superseded by paced retries and are not counted above.
+- Gemini out-of-pocket cost: **$0** (free tier).
+- **OpenAI `gpt-6.1-sol`:** smoke test on T1 failed immediately with `insufficient_quota` / `credit_balance_exhausted`. No task score assigned. Add credits at https://platform.openai.com/settings/organization/billing/ then re-run.
 - Not claimed: superiority over unmeasured models, or official hackathon / sponsor-stack eligibility.

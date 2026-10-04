@@ -13,13 +13,15 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 
 | Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
 | --- | ---: | ---: | ---: | ---: |
-| T1 Web product research | — | — | **2/3** | — |
-| T2 Persistent memory | — | — | **3/3** | — |
-| T3 Ticket + calendar | — | — | **3/3** | — |
-| T4 Durable workflow | — | — | **2/3** | — |
-| T5 Agent discovery | — | — | **0/3** | — |
-| T6 Visual catalog match | — | — | **3/3** | — |
-| **Total passes / 18** | — | — | **13/18** | — |
+| T1 Web product research | blocked* | — | **2/3** | — |
+| T2 Persistent memory | blocked* | — | **3/3** | — |
+| T3 Ticket + calendar | blocked* | — | **3/3** | — |
+| T4 Durable workflow | blocked* | — | **2/3** | — |
+| T5 Agent discovery | blocked* | — | **0/3** | — |
+| T6 Visual catalog match | blocked* | — | **3/3** | — |
+| **Total passes / 18** | blocked* | — | **13/18** | — |
+
+\*OpenAI API key worked, but the org has **no remaining credits** (`credit_balance_exhausted`). Smoke T1 failed before any task reasoning. Not a performance score.
 
 ### Latency (mean seconds; successful trials where available)
 

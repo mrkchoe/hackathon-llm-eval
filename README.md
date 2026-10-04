@@ -25,7 +25,7 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | Model | Conditions | Passes / 18 |
 | --- | --- | ---: |
 | `gemini-3.5-flash-lite` | Google AI Studio free tier | **13/18** |
-| `gpt-6.1-sol` | — | not run |
+| `gpt-6.1-sol` | Key OK; **no OpenAI credits** | blocked (not scored) |
 | `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
 
@@ -41,6 +41,8 @@ Full prompts and pass/fail checks: [`tasks/`](tasks/).
 | T6 Visual catalog match | 3 | — |
 
 More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
+
+**OpenAI note:** `gpt-6.1-sol` authenticated but returned `credit_balance_exhausted` on T1 smoke — full 18-trial suite not run until billing credits are added.
 
 ## Contents
 
