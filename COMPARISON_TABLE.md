@@ -45,11 +45,23 @@ Shared conditions: temperature 0; same prompts/tools/fixtures; provider-hosted e
 
 | Failure class | gpt-6.1-sol | claude-sonnet-5 | gemini-3.5-flash-lite | grok-4.7 |
 | --- | ---: | ---: | ---: | ---: |
-| incorrect_output | — | — | 1 (T5) | — |
+| incorrect_output | — | — | 1 (T5 t3) | — |
 | provider_error | — | — | 0 (after pacing) | — |
-| rate_limit | — | — | hit early unpaced run (15 RPM free tier); later paced | — |
-| timeout / max_turns | — | — | several (T1/T4/T5) | — |
+| rate_limit | — | — | early unpaced only; not in final 18 | — |
+| timeout / max_turns | — | — | 4 (T1 t3, T4 t1, T5 t1–t2) | — |
 | unsupported_capability | — | — | 0 | — |
+
+### Failed trials (`gemini-3.5-flash-lite`)
+
+| Task | Trial | Class | Missed checks |
+| --- | ---: | --- | --- |
+| T1 | 3 | max_turns | product_id, price_usd, page_url, in_stock |
+| T4 | 1 | max_turns | approval_before_execute, action, duplicates |
+| T5 | 1 | max_turns | specialist, confirmed, constraints |
+| T5 | 2 | max_turns | specialist, confirmed, constraints |
+| T5 | 3 | incorrect_output | confirmed, constraints |
+
+Full writeup: [`results/RESULTS.md`](results/RESULTS.md)
 
 ---
 

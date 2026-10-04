@@ -14,7 +14,9 @@ Measured results come only from live runs; empty cells mean not run.
 | `claude-sonnet-5` | — | not run |
 | `grok-4.7` | — | not run |
 
-Details: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
+Details and **failed trials**: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
+
+Gemini failures (5/18): T1 trial 3 (`max_turns`); T4 trial 1 (`max_turns`); T5 trials 1–2 (`max_turns`); T5 trial 3 (`incorrect_output` — missed `confirmed` / `constraints`).
 
 ## Contents
 

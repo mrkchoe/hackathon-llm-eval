@@ -82,14 +82,14 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 | Task | Passes / 3 | Notes |
 | --- | ---: | --- |
-| T1 Web research | 2 | 1× max_turns |
+| T1 Web research | 2 | Trial 3 failed (`max_turns`) |
 | T2 Memory | 3 | |
 | T3 Ticket + calendar | 3 | |
-| T4 Durable workflow | 2 | 1× max_turns |
-| T5 Agent discovery | 0 | Weakest task under this harness |
+| T4 Durable workflow | 2 | Trial 1 failed (`max_turns`) |
+| T5 Agent discovery | 0 | Trials 1–2 `max_turns`; trial 3 incorrect (`confirmed`, `constraints`) |
 | T6 Visual catalog match | 3 | Fastest (~6.4s mean) |
 
-Published summary: [`results/gemini_3.5_flash_lite_summary.json`](results/gemini_3.5_flash_lite_summary.json) · [`results/RESULTS.md`](results/RESULTS.md)
+Failed-trial table: [`results/RESULTS.md`](results/RESULTS.md) · [`results/gemini_3.5_flash_lite_summary.json`](results/gemini_3.5_flash_lite_summary.json)
 
 **Practical constraint:** free-tier Gemini is limited to ~**15 `generate_content` requests/minute**. Unpaced multi-turn runs hit 429; paced runs (`--pace-seconds 20`) completed. Out-of-pocket cost for this Gemini run: **$0**.
 

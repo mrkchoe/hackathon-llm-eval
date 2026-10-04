@@ -2,7 +2,7 @@
   "model_id": "gemini-3.5-flash-lite",
   "provider": "gemini",
   "tier": "free_tier",
-  "note": "Merged free-tier runs. Free RPM limit is 15 generate_content calls/min; later run used pacing + retries. Measured only \u2014 not fabricated.",
+  "note": "Merged free-tier runs. Free RPM limit is 15 generate_content calls/min; later run used pacing + retries. Measured only.",
   "task_success_rates": {
     "T1": {
       "passes": 2,
@@ -36,5 +36,67 @@
     }
   },
   "total_passes": 13,
-  "total_trials": 18
+  "total_trials": 18,
+  "failures": [
+    {
+      "task_id": "T1",
+      "trial": 3,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "product_id",
+        "price_usd",
+        "page_url",
+        "in_stock"
+      ],
+      "elapsed_seconds": 55.43899640000018
+    },
+    {
+      "task_id": "T4",
+      "trial": 1,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "approval_before_execute",
+        "action",
+        "duplicates"
+      ],
+      "elapsed_seconds": 56.49537839999539
+    },
+    {
+      "task_id": "T5",
+      "trial": 1,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "specialist",
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 55.42017329999362
+    },
+    {
+      "task_id": "T5",
+      "trial": 2,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "specialist",
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 55.508045700000366
+    },
+    {
+      "task_id": "T5",
+      "trial": 3,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "confirmed",
+        "constraints"
+      ],
+      "elapsed_seconds": 34.10896130000765
+    }
+  ]
 }
