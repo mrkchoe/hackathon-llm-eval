@@ -1,94 +1,104 @@
 # hackathon-llm-eval
 
-Small reproducible evaluation of LLM agents on hackathon-derived tasks: success, tool use, latency, and cost under shared conditions.
+We give the same **9 agent tasks** to four LLMs (Claude, GPT, Gemini, Grok), run each task **3 times**, and count how often they succeed.
 
-Independent pilot — not an official hackathon benchmark or endorsement.  
-Measured results come only from live runs; empty cells mean not run.
+No app. No dashboard. Just tasks, fake tools/data, and a score.
 
-## Tasks
+---
 
-Each **task (T1–T9)** is one hackathon-style agent problem. A **trial** is one independent attempt (fresh state). We run **3 trials per task** → **27** attempts per model.
+## How it works (plain English)
 
-| ID | What the model must do |
+1. The model gets a short problem (e.g. “book this meeting” or “pay this invoice”).
+2. It can call **tools** (search, write memory, approve a payout, etc.). Those tools hit **local fake data**, not real browsers or banks.
+3. When it’s done, it returns JSON. A **grader** checks whether it did the right thing.
+4. We do that **3 times per task** so one lucky/unlucky run doesn’t decide everything.
+
+**Pass** = grader checks all green.  
+**Fail** = wrong answer, skipped a required step, or gave up (`max_turns`).
+
+---
+
+## The 9 tasks
+
+| # | Plain English |
 | --- | --- |
-| **T1** Web product research | Find an in-stock slate 750 ml bottle ≤ $23 on fixture retailer pages; return id, price, and evidence URL |
-| **T2** Persistent memory | Save `user_a` cuisine preference, then recall it in a later session (no cross-user leak) |
-| **T3** Ticket + calendar | Read a meeting note; create the matching project ticket and calendar entry |
-| **T4** Durable workflow | Process support request REQ-1: look up → get approval → execute sandbox action (no action before approval) |
-| **T5** Agent discovery | Discover a scheduling specialist; book Nov 10 2026 10:00–10:30 PT with Alice; return confirmed constraints |
-| **T6** Visual catalog match | Match frame `frame_clear_bottle` to the catalog; return cheapest *eligible* listing |
-| **T7** Policy remediation | Resolve INC-220 under `refund_v1` (hidden fraud risk; quote/apply/notify) |
-| **T8** Amendment cancel | Follow `note_201` → amendment; cancel instead of creating stale ticket/calendar |
-| **T9** Amended payout | Pay INV-900 under `payout_v1`: follow amendment, sanctions code, 2% withhold, dual approval |
+| **T1** | Find the right water bottle in a fake shop (in stock, right size/color, cheap enough) and prove which page it was on. |
+| **T2** | Save a user’s food preference, then recall it later — without mixing up another user’s data. |
+| **T3** | Read a meeting note and create the matching ticket + calendar event. |
+| **T4** | Handle a support request in order: look it up → get approval → do the action (never act before approval). |
+| **T5** | Find a scheduling agent and book a specific meeting with Alice; only count it confirmed if the booking tool actually accepted it. |
+| **T6** | Match a product image/frame to the catalog and pick the cheapest *allowed* listing. |
+| **T7** | Handle a refund/credit case using the written policy (customer wording can be a trap; fraud risk matters). |
+| **T8** | Start from a meeting note that was later **cancelled** — don’t create ticket/calendar for the old plan. |
+| **T9** | Pay a vendor invoice the hard way: use the amended amount, clear sanctions with the right code, apply tax withhold, get two eligible approvers. |
 
-Full prompts and pass/fail checks: [`tasks/`](tasks/).
+More detail (prompts + pass rules): [`tasks/`](tasks/).
+
+---
 
 ## Results
 
-| Model | Conditions | Passes / 27 |
+Each model: **9 tasks × 3 trials = 27 attempts**.
+
+| Model | Setup | Score |
 | --- | --- | ---: |
-| `claude-sonnet-5` | Anthropic Messages API + tools | **27/27** |
-| `gpt-6.1-sol` | Responses API, `reasoning.effort=medium` | **27/27** |
-| `gemini-3.5-flash-lite` | Google AI Studio free tier | **22/27** |
-| `grok-4.7` | xAI API (`api.x.ai`) | **20/27** |
+| Claude Sonnet 5 | Anthropic API | **27/27** |
+| GPT 6.1 Sol | OpenAI Responses API, medium reasoning | **27/27** |
+| Gemini 3.5 Flash Lite | Free tier | **22/27** |
+| Grok 4.7 | xAI API | **20/27** |
 
-**T9** is the stress test (Grok 1/3). Claude/GPT still tie on pass rate.
+Who missed what: [`results/RESULTS.md`](results/RESULTS.md).
 
-### Failures (non-perfect models)
-
-**Gemini:** T1 t3, T4 t1, T7×3.  
-**Grok:** T2 t3, T3 t2, T5 t3, T8 t1/t3, T9 t2/t3.  
-
-More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
-
-
-## Contents
-
-| Path | Contents |
-| --- | --- |
-| [`RESEARCH_REPORT.md`](RESEARCH_REPORT.md) | Sources, protocol, budgets, limitations |
-| [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md) | Measured and documented-capability tables |
-| [`tasks/`](tasks/) | Nine task inputs and success criteria |
-| [`sources/`](sources/) | Event sources and sponsor-constraint notes |
-| [`fixtures/`](fixtures/) | Synthetic fixtures |
-| [`scripts/run_comparison.py`](scripts/run_comparison.py) | Multi-trial runner |
-| [`results/`](results/) | Published measured summaries |
-| `outputs/` | Local raw traces (gitignored) |
+---
 
 ## Setup
 
 ```bash
-cd hackathon-llm-eval   # or whatever the local folder is named
 python -m venv .venv
 .\.venv\Scripts\activate
 pip install -r requirements.txt
-copy .env.example .env   # add keys locally; never commit .env
+copy .env.example .env
 ```
 
-## Run
-
-```bash
-python scripts/run_comparison.py --reference-check
-
-python scripts/run_comparison.py --provider gemini --model gemini-3.5-flash-lite --trials 3 --pace-seconds 20
-python scripts/run_comparison.py --provider openai --model gpt-6.1-sol --trials 3
-python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
-python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
-```
-
-Gemini free tier is about 15 requests/minute; use `--pace-seconds 20` for multi-turn tool loops.
-
-## Credentials
+Put API keys in `.env` (never commit that file):
 
 | Provider | Variable |
 | --- | --- |
 | OpenAI | `OPENAI_API_KEY` |
 | Anthropic | `ANTHROPIC_API_KEY` |
 | Gemini | `GOOGLE_API_KEY` |
-| Grok (xAI) | `XAI_API_KEY` |
+| Grok | `XAI_API_KEY` |
+
+## Run
+
+```bash
+python scripts/run_comparison.py --reference-check
+
+python scripts/run_comparison.py --provider openai --model gpt-6.1-sol --trials 3
+python scripts/run_comparison.py --provider anthropic --model claude-sonnet-5 --trials 3
+python scripts/run_comparison.py --provider gemini --model gemini-3.5-flash-lite --trials 3 --pace-seconds 20
+python scripts/run_comparison.py --provider grok --model grok-4.7 --trials 3
+```
+
+Gemini free tier is ~15 requests/minute — use `--pace-seconds 20`.
+
+After runs: `python scripts/merge_all_summaries.py`
+
+---
+
+## Repo layout
+
+| Path | What it is |
+| --- | --- |
+| `tasks/` | Task writeups |
+| `fixtures/` | Fake shop / notes / invoices / policies |
+| `scripts/` | Runner + graders |
+| `results/` | Published scores |
+| `sources/` | Where the hackathon ideas came from |
+| `RESEARCH_REPORT.md` | Longer writeup (sources, limits) |
+| `outputs/` | Raw local traces (gitignored) |
 
 ## Scope
 
-- Six adapted tasks, sources, minimal runner, measured results  
-- No app or dashboard  
-- Build-time coding assistants are documented separately from runtime models under test  
+- **In:** 9 tasks, shared tools/fixtures, live API scores, source notes  
+- **Out:** product UI, claiming official hackathon endorsement, inventing scores without keys  

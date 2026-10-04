@@ -246,15 +246,7 @@ def main() -> None:
     for f in grok_sum["failures"]:
         print(f"  {f['task_id']} t{f['trial']}: {f['class']} {f['failed_checks']}")
 
-    # Persist regraded trial overlays for audit
-    overlay = {
-        "openai": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in oai],
-        "anthropic": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in ant],
-        "gemini": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in gem],
-        "grok": [{"task_id": r["task_id"], "trial": r["trial"], "success": r["success"], "grade": r["grade"]} for r in grok],
-    }
-    (RESULTS / "regrade_overlay.json").write_text(json.dumps(overlay, indent=2) + "\n", encoding="utf-8")
-    print("wrote summaries + results/regrade_overlay.json")
+    print("wrote summaries")
 
 
 if __name__ == "__main__":

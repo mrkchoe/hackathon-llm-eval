@@ -14,8 +14,8 @@ Two roles are kept separate:
 
 | Role | What it is | How we treat it |
 | --- | --- | --- |
-| **Build-time assistant** | Model helping participants write code (Cursor, Claude Code, Copilot, etc.) | Documented from event tooling; **not** scored in T1–T6 |
-| **Runtime model** | Model that powers the submitted agent/app via API | **What T1–T6 measure** |
+| **Build-time assistant** | Model helping participants write code (Cursor, Claude Code, Copilot, etc.) | Documented from event tooling; **not** scored in T1–T9 |
+| **Runtime model** | Model that powers the submitted agent/app via API | **What T1–T9 measure** |
 
 Winner API-credit prizes are **not** the same as participant build budgets.
 
@@ -38,7 +38,7 @@ Full cards: [`sources/registry.yaml`](sources/registry.yaml), [`sources/sponsor_
 
 ---
 
-## 3. Six concrete tasks
+## 3. Nine concrete tasks
 
 Published under [`tasks/`](tasks/) with inputs and explicit success criteria.
 
@@ -50,6 +50,9 @@ Published under [`tasks/`](tasks/) with inputs and explicit success criteria.
 | **T4** | Support workflow with approval | Conversion/Temporal + TiDB AgentX | Ordered tools, side-effect control |
 | **T5** | Discover agent + schedule | Fetch UK + Cal Hacks Fetch | Delegation, constraint preservation |
 | **T6** | Visual catalog match + price | Daytona / Shop the Video theme | Multimodal match; cheapest eligible listing |
+| **T7** | Policy-gated remediation | TiDB / support workflow | Policy follow, fraud gate |
+| **T8** | Amendment cancellation | Composio-style revisions | Prefer latest instruction; refuse stale create |
+| **T9** | Dual-control amended payout | Agentic approval / Temporal-style | Amendment, sanctions, withhold, dual control |
 
 Each task is an **adaptation** with synthetic fixtures. Passing a task does not prove live sponsor-product usage.
 
@@ -134,7 +137,7 @@ Copy `.env.example` → `.env`. Without keys, the runner refuses live mode rathe
 
 ## 9. Limitations
 
-- Small pilot (6 tasks × 3 trials). Small gaps are not overall superiority.  
+- Small pilot (9 tasks × 3 trials). Small gaps are not overall superiority.  
 - Adaptations ≠ official contest tests.  
 - Participant-reported metrics are unverified.  
 - Sandbox tools ≠ proof of sponsor-stack integration.  

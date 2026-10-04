@@ -659,7 +659,7 @@ def run_reference_check() -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Minimal LLM comparison runner (T1–T6)")
+    p = argparse.ArgumentParser(description="Minimal LLM comparison runner (T1–T9)")
     p.add_argument("--reference-check", action="store_true", help="Validate fixtures/graders only")
     p.add_argument("--provider", choices=["openai", "anthropic", "gemini", "grok"])
     p.add_argument("--model", help="Exact model ID (defaults per provider)")

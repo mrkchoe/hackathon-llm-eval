@@ -1,10 +1,9 @@
-# Tasks T1–T6
+# Tasks
 
-Each file publishes:
+Nine problems we give every model. Each file has:
 
-1. Source event + evidence kind (official vs participant-reported vs adaptation)
-2. Task input
-3. Allowed tools
-4. Explicit success criteria
+1. What the model should do (plain input)
+2. Which tools it may use
+3. What counts as a pass
 
-Fixtures live in `/fixtures`. Graders live in `scripts/grade.py`.
+Fake data lives in `/fixtures`. Scoring lives in `scripts/grade.py`.

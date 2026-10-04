@@ -1,4 +1,4 @@
-"""Merge T1–T6 base runs with latest T7/T8 task runs into published summaries."""
+"""Merge base T1–T6 runs with latest T7–T9 task runs into published summaries."""
 from __future__ import annotations
 
 import json
