@@ -1,21 +1,30 @@
 # Measured results
 
-Scores use lenient graders on saved traces. Suite is **T1–T8** (24 trials/model).
-
-**Hard tasks added:**  
-- **T7** policy-gated remediation (hidden fraud risk → escalate)  
-- **T8** amendment cancellation (must not create from stale note)
+Suite **T1–T9** (27 trials/model). Lenient graders on T1–T6; hard compliance tasks T7–T9.
 
 ## Summary
 
-| Model | Passes / 24 | T7 | T8 | Notes |
-| --- | ---: | ---: | ---: | --- |
-| `claude-sonnet-5` | **24 / 24** | 3/3 | 3/3 | Fastest on hard tasks (~9.8s mean T7+T8) |
-| `gpt-6.1-sol` | **24 / 24** | 3/3 | 3/3 | `reasoning.effort=medium`; T7 ~16.3s / T8 ~5.6s |
-| `grok-4.7` | **19 / 24** | 3/3 | 1/3 | Misses on T2/T3/T5 + T8 |
-| `gemini-3.5-flash-lite` | **19 / 24** | 0/3 | 3/3 | Free tier; fails T7 |
+| Model | Passes / 27 | T7 | T8 | T9 |
+| --- | ---: | ---: | ---: | ---: |
+| `claude-sonnet-5` | **27 / 27** | 3/3 | 3/3 | 3/3 |
+| `gpt-6.1-sol` | **27 / 27** | 3/3 | 3/3 | 3/3 |
+| `gemini-3.5-flash-lite` | **22 / 27** | 0/3 | 3/3 | 3/3 |
+| `grok-4.7` | **20 / 27** | 3/3 | 1/3 | 1/3 |
 
-Claude and GPT both clean-sweep pass rate; T7/T8 separate the field below them. Tie-break among perfect scores: latency on hard tasks (Claude faster).
+GPT: `reasoning.effort=medium`. Claude/GPT still tie on pass rate; Claude faster on hard tasks. **T9** (amended payout + sanctions code + 2% withhold + dual approval) is the stress test — Grok drops to 1/3.
+
+---
+
+## T9 — Dual-control amended payout (very hard)
+
+Stacked traps: superseded invoice amount, consulting 2% withhold (8500 → **8330**), sanctions hold cleared only with code `FP-SIM-44`, dual eligible approvers (not preferred `charlie`).
+
+| Model | Passes / 3 |
+| --- | ---: |
+| Claude | 3 |
+| GPT | 3 |
+| Gemini | 3 |
+| Grok | 1 |
 
 ---
 
@@ -23,25 +32,12 @@ Claude and GPT both clean-sweep pass rate; T7/T8 separate the field below them. 
 
 | Task | Claude | GPT | Gemini | Grok |
 | --- | ---: | ---: | ---: | ---: |
-| T1 Web research | 3 | 3 | 2 | 3 |
-| T2 Memory | 3 | 3 | 3 | 2 |
-| T3 Ticket + calendar | 3 | 3 | 3 | 2 |
-| T4 Durable workflow | 3 | 3 | 2 | 3 |
-| T5 Agent discovery | 3 | 3 | 3 | 2 |
-| T6 Visual catalog | 3 | 3 | 3 | 3 |
+| T1–T6 | 3 each | 3 each | see fails | see fails |
 | T7 Policy remediation | 3 | 3 | 0 | 3 |
 | T8 Amendment cancel | 3 | 3 | 3 | 1 |
+| T9 Amended payout | 3 | 3 | 3 | 1 |
 
-### Remaining failures
+### Failures
 
-**Gemini:** T1 t3, T4 t1, T7 t1–t3 (max_turns / incomplete remediation).  
-**Grok:** T2 t3, T3 t2, T5 t3, T8 t1 & t3.
-
-### Cost (approx.)
-
-| Model | Estimate |
-| --- | --- |
-| Claude | ~$0.3+ (full T1–T8 token mix) |
-| GPT | rates not pinned |
-| Grok | ~$0.3+ |
-| Gemini | $0 free tier |
+**Gemini:** T1 t3, T4 t1, T7×3.  
+**Grok:** T2 t3, T3 t2, T5 t3, T8 t1/t3, T9 t2/t3.

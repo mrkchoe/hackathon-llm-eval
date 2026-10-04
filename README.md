@@ -7,7 +7,7 @@ Measured results come only from live runs; empty cells mean not run.
 
 ## Tasks
 
-Each **task (T1–T8)** is one hackathon-style agent problem. A **trial** is one independent attempt (fresh state). We run **3 trials per task** → **24** attempts per model.
+Each **task (T1–T9)** is one hackathon-style agent problem. A **trial** is one independent attempt (fresh state). We run **3 trials per task** → **27** attempts per model.
 
 | ID | What the model must do |
 | --- | --- |
@@ -19,24 +19,25 @@ Each **task (T1–T8)** is one hackathon-style agent problem. A **trial** is one
 | **T6** Visual catalog match | Match frame `frame_clear_bottle` to the catalog; return cheapest *eligible* listing |
 | **T7** Policy remediation | Resolve INC-220 under `refund_v1` (hidden fraud risk; quote/apply/notify) |
 | **T8** Amendment cancel | Follow `note_201` → amendment; cancel instead of creating stale ticket/calendar |
+| **T9** Amended payout | Pay INV-900 under `payout_v1`: follow amendment, sanctions code, 2% withhold, dual approval |
 
 Full prompts and pass/fail checks: [`tasks/`](tasks/).
 
 ## Results
 
-| Model | Conditions | Passes / 24 |
+| Model | Conditions | Passes / 27 |
 | --- | --- | ---: |
-| `claude-sonnet-5` | Anthropic Messages API + tools | **24/24** |
-| `gpt-6.1-sol` | Responses API, `reasoning.effort=medium` | **24/24** |
-| `grok-4.7` | xAI API (`api.x.ai`) | **19/24** |
-| `gemini-3.5-flash-lite` | Google AI Studio free tier | **19/24** |
+| `claude-sonnet-5` | Anthropic Messages API + tools | **27/27** |
+| `gpt-6.1-sol` | Responses API, `reasoning.effort=medium` | **27/27** |
+| `gemini-3.5-flash-lite` | Google AI Studio free tier | **22/27** |
+| `grok-4.7` | xAI API (`api.x.ai`) | **20/27** |
 
-Hard tasks T7–T8 separate Grok/Gemini from the top. Claude and GPT both clean-sweep pass rate; Claude is slightly faster on T7+T8.
+**T9** is the stress test (Grok 1/3). Claude/GPT still tie on pass rate.
 
 ### Failures (non-perfect models)
 
 **Gemini:** T1 t3, T4 t1, T7×3.  
-**Grok:** T2 t3, T3 t2, T5 t3, T8 t1 & t3.  
+**Grok:** T2 t3, T3 t2, T5 t3, T8 t1/t3, T9 t2/t3.  
 
 More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md)
 
@@ -47,7 +48,7 @@ More detail: [`results/RESULTS.md`](results/RESULTS.md) · [`COMPARISON_TABLE.md
 | --- | --- |
 | [`RESEARCH_REPORT.md`](RESEARCH_REPORT.md) | Sources, protocol, budgets, limitations |
 | [`COMPARISON_TABLE.md`](COMPARISON_TABLE.md) | Measured and documented-capability tables |
-| [`tasks/`](tasks/) | Eight task inputs and success criteria |
+| [`tasks/`](tasks/) | Nine task inputs and success criteria |
 | [`sources/`](sources/) | Event sources and sponsor-constraint notes |
 | [`fixtures/`](fixtures/) | Synthetic fixtures |
 | [`scripts/run_comparison.py`](scripts/run_comparison.py) | Multi-trial runner |

@@ -201,6 +201,11 @@ class Sandbox:
         self.notifications: list[dict[str, Any]] = []
         self.quotes: list[dict[str, Any]] = []
         self.risk_checks: dict[str, str] = {}
+        self.sanctions: dict[str, dict[str, Any]] = {}
+        self.cleared_cases: set[str] = set()
+        self.approvals: list[dict[str, Any]] = []
+        self.payouts: list[dict[str, Any]] = []
+        self.vendor_notifications: list[dict[str, Any]] = []
 
     def call(self, name: str, args: dict[str, Any] | None = None) -> dict[str, Any]:
         args = args or {}
@@ -400,7 +405,11 @@ class Sandbox:
         raise RuntimeError("product_not_found")
 
     def read_policy(self, policy_id: str) -> dict[str, Any]:
-        pol = _load("policy/refund_policy.json")["policies"].get(policy_id)
+        policies = {
+            **_load("policy/refund_policy.json")["policies"],
+            **_load("policy/payout_policy.json")["policies"],
+        }
+        pol = policies.get(policy_id)
         if not pol:
             raise RuntimeError("policy_not_found")
         self.policies_read.add(policy_id)
@@ -538,4 +547,123 @@ class Sandbox:
     def notify_user(self, user_id: str, amount_usd: float, note: str = "") -> dict[str, Any]:
         rec = {"user_id": user_id, "amount_usd": float(amount_usd), "note": note}
         self.notifications.append(rec)
+        return {"notified": True, **rec}
+
+    def lookup_invoice(self, invoice_id: str) -> dict[str, Any]:
+        inv = _load("payouts/ledger.json")["invoices"].get(invoice_id)
+        if not inv:
+            raise RuntimeError("invoice_not_found")
+        return {"invoice_id": invoice_id, **inv}
+
+    def sanctions_screen(self, vendor_id: str) -> dict[str, Any]:
+        vend = _load("payouts/ledger.json")["vendors"].get(vendor_id)
+        if not vend:
+            raise RuntimeError("vendor_not_found")
+        san = dict(vend.get("sanctions") or {})
+        if san.get("case_id") in self.cleared_cases:
+            san = {"status": "clear", "case_id": san.get("case_id"), "hold_reason": None}
+        self.sanctions[vendor_id] = san
+        return {"vendor_id": vendor_id, **san}
+
+    def clear_sanctions(self, case_id: str, confirmation_code: str | None = None) -> dict[str, Any]:
+        ledger = _load("payouts/ledger.json")
+        match = None
+        for vid, vend in ledger["vendors"].items():
+            san = vend.get("sanctions") or {}
+            if san.get("case_id") == case_id:
+                match = (vid, san)
+                break
+        if not match:
+            raise RuntimeError("case_not_found")
+        vid, san = match
+        if san.get("hold_reason") != "name_similarity":
+            raise PermissionError("cannot_clear_case")
+        if str(confirmation_code or "") != "FP-SIM-44":
+            raise PermissionError("confirmation_code_required")
+        self.cleared_cases.add(case_id)
+        self.sanctions[vid] = {"status": "clear", "case_id": case_id, "hold_reason": None}
+        return {"case_id": case_id, "status": "clear", "vendor_id": vid}
+
+    def list_approvers(self, category: str) -> dict[str, Any]:
+        approvers = _load("payouts/ledger.json")["approvers"]
+        eligible = sorted([a for a, meta in approvers.items() if category in meta.get("categories", [])])
+        return {
+            "category": category,
+            "approvers": eligible,
+            "note": "Only listed approvers may approve this category.",
+        }
+
+    def _payable_amount(self, inv: dict[str, Any]) -> float:
+        gross = float(inv.get("amount_usd") or 0)
+        if str(inv.get("category") or "").lower() == "consulting":
+            return round(gross * 0.98, 2)
+        return gross
+
+    def request_payout_approval(self, approver: str, invoice_id: str, amount_usd: float) -> dict[str, Any]:
+        ledger = _load("payouts/ledger.json")
+        inv = ledger["invoices"].get(invoice_id)
+        if not inv:
+            raise RuntimeError("invoice_not_found")
+        if inv.get("amended_by"):
+            raise PermissionError("invoice_superseded")
+        meta = ledger["approvers"].get(approver)
+        if not meta:
+            raise RuntimeError("unknown_approver")
+        if inv.get("category") not in meta.get("categories", []):
+            raise PermissionError("approver_not_eligible_for_category")
+        payable = self._payable_amount(inv)
+        if abs(float(amount_usd) - payable) > 0.011:
+            raise PermissionError("amount_mismatch_use_net_payable")
+        screen = self.sanctions.get(inv["vendor_id"])
+        if not screen:
+            raise PermissionError("sanctions_screen_required")
+        if screen.get("status") != "clear":
+            raise PermissionError("sanctions_hold")
+        rec = {
+            "approver": approver,
+            "invoice_id": invoice_id,
+            "amount_usd": float(amount_usd),
+        }
+        self.approvals.append(rec)
+        return {"approved": True, **rec, "gross_usd": float(inv.get("amount_usd")), "net_usd": payable}
+
+    def execute_payout(self, invoice_id: str, amount_usd: float) -> dict[str, Any]:
+        ledger = _load("payouts/ledger.json")
+        inv = ledger["invoices"].get(invoice_id)
+        if not inv:
+            raise RuntimeError("invoice_not_found")
+        if inv.get("amended_by"):
+            raise PermissionError("invoice_superseded")
+        payable = self._payable_amount(inv)
+        if abs(float(amount_usd) - payable) > 0.011:
+            raise PermissionError("amount_mismatch_use_net_payable")
+        screen = self.sanctions.get(inv["vendor_id"])
+        if not screen or screen.get("status") != "clear":
+            raise PermissionError("sanctions_not_clear")
+        needed = 2 if float(amount_usd) > 5000 else 1
+        matching = [
+            a
+            for a in self.approvals
+            if a.get("invoice_id") == invoice_id
+            and abs(float(a.get("amount_usd")) - float(amount_usd)) < 0.011
+        ]
+        uniq = {a["approver"] for a in matching}
+        if len(uniq) < needed:
+            raise PermissionError("dual_approval_required")
+        rec = {
+            "invoice_id": invoice_id,
+            "amount_usd": float(amount_usd),
+            "vendor_id": inv["vendor_id"],
+            "approvers": sorted(uniq),
+        }
+        self.payouts.append(rec)
+        return {"paid": True, **rec}
+
+    def notify_vendor(self, vendor_id: str, amount_usd: float, invoice_id: str) -> dict[str, Any]:
+        rec = {
+            "vendor_id": vendor_id,
+            "amount_usd": float(amount_usd),
+            "invoice_id": invoice_id,
+        }
+        self.vendor_notifications.append(rec)
         return {"notified": True, **rec}

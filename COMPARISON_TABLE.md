@@ -1,60 +1,21 @@
 # Comparison tables
 
-**Measured:** Claude **24/24**, GPT **24/24**, Grok **19/24**, Gemini **19/24** (T1–T8).
+**Measured:** Claude **27/27**, GPT **27/27**, Gemini **22/27**, Grok **20/27** (T1–T9).
 
-Hard tasks: **T7** (policy + hidden fraud risk) and **T8** (amendment cancellation).
+Hardest task: **T9** dual-control amended payout (amendment + sanctions code `FP-SIM-44` + 2% consulting withhold → 8330 + dual approvers).
 
 ---
 
-## A. Runtime models — measured task success (3 trials each)
+## A. Task success (3 trials each)
 
-| Task | `gpt-6.1-sol` | `claude-sonnet-5` | `gemini-3.5-flash-lite` | `grok-4.7` |
+| Task | GPT | Claude | Gemini | Grok |
 | --- | ---: | ---: | ---: | ---: |
-| T1 Web product research | **3/3** | **3/3** | **2/3** | **3/3** |
-| T2 Persistent memory | **3/3** | **3/3** | **3/3** | **2/3** |
-| T3 Ticket + calendar | **3/3** | **3/3** | **3/3** | **2/3** |
-| T4 Durable workflow | **3/3** | **3/3** | **2/3** | **3/3** |
-| T5 Agent discovery | **3/3** | **3/3** | **3/3** | **2/3** |
-| T6 Visual catalog match | **3/3** | **3/3** | **3/3** | **3/3** |
+| T1–T6 | 18/18 | 18/18 | 16/18 | 15/18 |
 | T7 Policy remediation | **3/3** | **3/3** | **0/3** | **3/3** |
 | T8 Amendment cancel | **3/3** | **3/3** | **3/3** | **1/3** |
-| **Total passes / 24** | **24/24** | **24/24** | **19/24** | **19/24** |
+| T9 Amended payout | **3/3** | **3/3** | **3/3** | **1/3** |
+| **Total / 27** | **27/27** | **27/27** | **22/27** | **20/27** |
 
-GPT settings: Responses API, `reasoning.effort=medium`.  
-Pass-rate tie at the top: Claude mean latency on T7+T8 ≈ **9.8s** vs GPT medium ≈ **11.0s**.
+GPT: `reasoning.effort=medium`.
 
-### Hard-task latency (mean seconds, passes)
-
-| Task | GPT (medium) | Claude | Gemini | Grok |
-| --- | ---: | ---: | ---: | ---: |
-| T7 | ~16.3 | ~12.9 | n/a | ~11.5 |
-| T8 | ~5.6 | ~6.7 | ~32.3 | ~10.3 (1 pass) |
-
----
-
-## Failed trials
-
-### Gemini
-
-| Task | Trials | Class |
-| --- | --- | --- |
-| T1 | 3 | max_turns |
-| T4 | 1 | max_turns |
-| T7 | 1–3 | max_turns / incomplete |
-
-### Grok
-
-| Task | Trials | Class |
-| --- | --- | --- |
-| T2 | 3 | incorrect_output |
-| T3 | 2 | incorrect_output |
-| T5 | 3 | incorrect_output |
-| T8 | 1, 3 | max_turns |
-
-Full writeup: [`results/RESULTS.md`](results/RESULTS.md)
-
-```bash
-python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --trials 3
-python scripts/run_comparison.py --provider <...> --tasks T7 T8 --trials 3
-python scripts/merge_all_summaries.py
-```
+Full detail: [`results/RESULTS.md`](results/RESULTS.md)

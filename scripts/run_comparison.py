@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal multi-trial LLM comparison runner for tasks T1–T8.
+Minimal multi-trial LLM comparison runner for tasks T1–T9.
 
 Does not fabricate live results. Without API keys, only --reference-check
 (validates fixtures/graders) is available — that is NOT a model comparison.
@@ -129,6 +129,28 @@ TASKS = {
             "create_calendar_entry",
         ],
         "vision": False,
+    },
+    "T9": {
+        "file": "tasks/T9_dual_control_amended_payout.md",
+        "prompt": (
+            "Process payout starting from invoice INV-900 under authoritative policy payout_v1. "
+            "Use only the provided tools. When finished return JSON "
+            "{invoice_id, amount_usd, approvers, sanctions_case, status}. "
+            "Tools: read_policy, lookup_invoice, sanctions_screen, clear_sanctions, "
+            "list_approvers, request_payout_approval, execute_payout, notify_vendor."
+        ),
+        "tools": [
+            "read_policy",
+            "lookup_invoice",
+            "sanctions_screen",
+            "clear_sanctions",
+            "list_approvers",
+            "request_payout_approval",
+            "execute_payout",
+            "notify_vendor",
+        ],
+        "vision": False,
+        "max_turns": 16,
     },
 }
 
@@ -262,6 +284,33 @@ def reference_solver(task_id: str, sb: Sandbox) -> dict:
         sb.call("read_amendment_note", {"note_id": "note_202"})
         # Cancellation: create nothing.
         return {"status": "cancelled", "note_id_used": "note_202"}
+    if task_id == "T9":
+        sb.call("read_policy", {"policy_id": "payout_v1"})
+        sb.call("lookup_invoice", {"invoice_id": "INV-900"})
+        sb.call("lookup_invoice", {"invoice_id": "INV-900A"})
+        sb.call("sanctions_screen", {"vendor_id": "V-44"})
+        sb.call("clear_sanctions", {"case_id": "S-12", "confirmation_code": "FP-SIM-44"})
+        sb.call("list_approvers", {"category": "consulting"})
+        sb.call(
+            "request_payout_approval",
+            {"approver": "alice", "invoice_id": "INV-900A", "amount_usd": 8330.0},
+        )
+        sb.call(
+            "request_payout_approval",
+            {"approver": "bob", "invoice_id": "INV-900A", "amount_usd": 8330.0},
+        )
+        sb.call("execute_payout", {"invoice_id": "INV-900A", "amount_usd": 8330.0})
+        sb.call(
+            "notify_vendor",
+            {"vendor_id": "V-44", "amount_usd": 8330.0, "invoice_id": "INV-900A"},
+        )
+        return {
+            "invoice_id": "INV-900A",
+            "amount_usd": 8330.0,
+            "approvers": ["alice", "bob"],
+            "sanctions_case": "S-12",
+            "status": "paid",
+        }
     raise ValueError(task_id)
 
 
@@ -665,7 +714,13 @@ def main() -> int:
             t0 = time.perf_counter()
             failure = None
             try:
-                result = runner(model, meta["prompt"], meta["tools"], sb)
+                result = runner(
+                    model,
+                    meta["prompt"],
+                    meta["tools"],
+                    sb,
+                    max_turns=int(meta.get("max_turns") or 10),
+                )
                 output = result["output"]
                 usage = result["usage"]
                 if result.get("error"):

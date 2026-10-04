@@ -1,0 +1,58 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "invoices": {
+    "INV-900": {
+      "vendor_id": "V-44",
+      "vendor_name": "Northwind Consulting LLC",
+      "category": "consulting",
+      "amount_usd": 10000.0,
+      "currency": "USD",
+      "status": "open",
+      "preferred_approver": "charlie",
+      "suggested_pay_amount": 10000.0,
+      "amended_by": "INV-900A",
+      "note": "Original invoice — superseded if amended_by is set."
+    },
+    "INV-900A": {
+      "vendor_id": "V-44",
+      "vendor_name": "Northwind Consulting LLC",
+      "category": "consulting",
+      "amount_usd": 8500.0,
+      "currency": "USD",
+      "status": "open",
+      "amends": "INV-900",
+      "preferred_approver": "charlie",
+      "suggested_pay_amount": 10000.0,
+      "note": "Amendment: fee reduction. This is the payable invoice."
+    },
+    "INV-877": {
+      "vendor_id": "V-12",
+      "vendor_name": "Decoy Supplies",
+      "category": "facilities",
+      "amount_usd": 8500.0,
+      "currency": "USD",
+      "status": "open",
+      "preferred_approver": "alice",
+      "note": "Unrelated decoy invoice."
+    }
+  },
+  "approvers": {
+    "alice": {"categories": ["consulting", "facilities"]},
+    "bob": {"categories": ["consulting"]},
+    "charlie": {"categories": ["facilities"]}
+  },
+  "vendors": {
+    "V-44": {
+      "name": "Northwind Consulting LLC",
+      "sanctions": {
+        "status": "hold",
+        "case_id": "S-12",
+        "hold_reason": "name_similarity"
+      }
+    },
+    "V-12": {
+      "name": "Decoy Supplies",
+      "sanctions": {"status": "clear", "case_id": null, "hold_reason": null}
+    }
+  }
+}

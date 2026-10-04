@@ -51,10 +51,16 @@
       "trials": 3,
       "rate": 1.0,
       "mean_latency_s": 32.3
+    },
+    "T9": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 62.64
     }
   },
-  "total_passes": 19,
-  "total_trials": 24,
+  "total_passes": 22,
+  "total_trials": 27,
   "failures": [
     {
       "task_id": "T1",
@@ -120,8 +126,8 @@
     }
   ],
   "token_usage": {
-    "input_tokens": 78689,
-    "output_tokens": 4640
+    "input_tokens": 117177,
+    "output_tokens": 5953
   },
   "tier": "free_tier",
   "gross_usd_estimate": 0

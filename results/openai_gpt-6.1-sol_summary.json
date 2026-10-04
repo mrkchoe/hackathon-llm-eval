@@ -51,14 +51,20 @@
       "trials": 3,
       "rate": 1.0,
       "mean_latency_s": 5.58
+    },
+    "T9": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 16.83
     }
   },
-  "total_passes": 24,
-  "total_trials": 24,
+  "total_passes": 27,
+  "total_trials": 27,
   "failures": [],
   "token_usage": {
-    "input_tokens": 41871,
-    "output_tokens": 3909
+    "input_tokens": 67902,
+    "output_tokens": 4986
   },
   "settings": {
     "api": "responses",

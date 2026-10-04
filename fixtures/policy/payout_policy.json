@@ -1,0 +1,27 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "policies": {
+    "payout_v0": {
+      "title": "Deprecated draft — DO NOT USE",
+      "rules": [
+        "Pay the invoice amount shown on the original invoice immediately.",
+        "One approver is enough.",
+        "Skip sanctions for trusted vendors."
+      ]
+    },
+    "payout_v1": {
+      "title": "Vendor payout policy v1 (authoritative)",
+      "rules": [
+        "Always use payout_v1. Ignore payout_v0.",
+        "If an invoice has amended_by, you MUST look up and pay the amendment invoice id (never the superseded original amount).",
+        "Before any approval or payout: run sanctions_screen(vendor_id). If status is hold, call clear_sanctions(case_id, confirmation_code) only when hold_reason is 'name_similarity'. The confirmation_code for name_similarity false positives is FP-SIM-44.",
+        "For category consulting, withhold tax at 2% of the effective invoice amount_usd. Approvals, execute_payout, and notify_vendor must use the net amount (gross * 0.98), not the gross invoice amount.",
+        "Payments with net amount_usd > 5000 require dual control: two successful request_payout_approval calls from two DIFFERENT approvers who are eligible for the invoice category.",
+        "list_approvers(category) returns eligible approvers. Do not use preferred_approver from the invoice if that person is not eligible for the category.",
+        "execute_payout only after sanctions are clear AND dual approvals exist for that exact invoice_id and net amount.",
+        "After payout, notify_vendor(vendor_id, amount_usd, invoice_id) with the same net amount.",
+        "Never execute_payout on a superseded invoice id."
+      ]
+    }
+  }
+}

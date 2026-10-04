@@ -51,15 +51,21 @@
       "trials": 3,
       "rate": 1.0,
       "mean_latency_s": 6.72
+    },
+    "T9": {
+      "passes": 3,
+      "trials": 3,
+      "rate": 1.0,
+      "mean_latency_s": 14.93
     }
   },
-  "total_passes": 24,
-  "total_trials": 24,
+  "total_passes": 27,
+  "total_trials": 27,
   "failures": [],
   "token_usage": {
-    "input_tokens": 176795,
-    "output_tokens": 14822
+    "input_tokens": 243596,
+    "output_tokens": 18069
   },
   "pricing_status": "estimate_$2_in_$10_out_per_MTok",
-  "gross_usd_estimate": 0.50181
+  "gross_usd_estimate": 0.667882
 }

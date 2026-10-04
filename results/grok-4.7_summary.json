@@ -51,10 +51,16 @@
       "trials": 3,
       "rate": 0.3333333333333333,
       "mean_latency_s": 10.28
+    },
+    "T9": {
+      "passes": 1,
+      "trials": 3,
+      "rate": 0.3333333333333333,
+      "mean_latency_s": 17.83
     }
   },
-  "total_passes": 19,
-  "total_trials": 24,
+  "total_passes": 20,
+  "total_trials": 27,
   "failures": [
     {
       "task_id": "T2",
@@ -128,16 +134,46 @@
         "output"
       ],
       "output": {}
+    },
+    {
+      "task_id": "T9",
+      "trial": 2,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "sanctions_screen",
+        "sanctions_clear",
+        "dual_approval",
+        "payout",
+        "notify_vendor",
+        "output"
+      ],
+      "output": {}
+    },
+    {
+      "task_id": "T9",
+      "trial": 3,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "sanctions_screen",
+        "sanctions_clear",
+        "dual_approval",
+        "payout",
+        "notify_vendor",
+        "output"
+      ],
+      "output": {}
     }
   ],
   "token_usage": {
-    "input_tokens": 251650,
-    "output_tokens": 3606
+    "input_tokens": 350093,
+    "output_tokens": 4473
   },
   "settings": {
     "api": "openai_compatible",
     "base_url": "https://api.x.ai/v1"
   },
   "pricing_status": "estimate_$2_in_$6_out_per_MTok",
-  "gross_usd_estimate": 0.524936
+  "gross_usd_estimate": 0.727024
 }

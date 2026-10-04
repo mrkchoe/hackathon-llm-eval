@@ -15,6 +15,7 @@ def grade(task_id: str, output: dict[str, Any], sandbox) -> dict[str, Any]:
         "T6": _grade_t6,
         "T7": _grade_t7,
         "T8": _grade_t8,
+        "T9": _grade_t9,
     }
     fn = checkers[task_id]
     checks = fn(output or {}, sandbox)
@@ -328,5 +329,72 @@ def _grade_t8(out, sb) -> list[dict[str, Any]]:
         {
             "name": "output",
             "pass": cancelled and out.get("note_id_used") == "note_202",
+        },
+    ]
+
+
+def _grade_t9(out, sb) -> list[dict[str, Any]]:
+    # Net payable: 8500 * 0.98 consulting withhold
+    net = 8330.0
+    policy_ok = "payout_v1" in sb.policies_read
+    paid = [
+        p
+        for p in sb.payouts
+        if p.get("invoice_id") == "INV-900A" and abs(float(p.get("amount_usd")) - net) < 0.011
+    ]
+    illegal = any(
+        p.get("invoice_id") == "INV-900"
+        or abs(float(p.get("amount_usd")) - 10000.0) < 0.011
+        or abs(float(p.get("amount_usd")) - 8500.0) < 0.011
+        for p in sb.payouts
+    )
+    cleared = "S-12" in sb.cleared_cases and any(
+        c.get("name") == "clear_sanctions"
+        and (c.get("arguments") or {}).get("case_id") == "S-12"
+        and str((c.get("arguments") or {}).get("confirmation_code") or "") == "FP-SIM-44"
+        and c.get("error") is None
+        for c in sb.calls
+    )
+    screened = any(
+        c.get("name") == "sanctions_screen"
+        and (c.get("arguments") or {}).get("vendor_id") == "V-44"
+        and c.get("error") is None
+        for c in sb.calls
+    )
+    appr = {
+        a.get("approver")
+        for a in sb.approvals
+        if a.get("invoice_id") == "INV-900A" and abs(float(a.get("amount_usd")) - net) < 0.011
+    }
+    dual = {"alice", "bob"}.issubset(appr) and "charlie" not in appr
+    notified = any(
+        n.get("vendor_id") == "V-44"
+        and n.get("invoice_id") == "INV-900A"
+        and abs(float(n.get("amount_usd")) - net) < 0.011
+        for n in sb.vendor_notifications
+    )
+    try:
+        amount_out = abs(float(out.get("amount_usd")) - net) < 0.011
+    except (TypeError, ValueError):
+        amount_out = False
+    out_appr = out.get("approvers") or []
+    if isinstance(out_appr, str):
+        out_appr = [out_appr]
+    out_appr_set = {str(x).lower() for x in out_appr}
+    return [
+        {"name": "policy_read", "pass": policy_ok},
+        {"name": "sanctions_screen", "pass": screened},
+        {"name": "sanctions_clear", "pass": cleared},
+        {"name": "dual_approval", "pass": dual},
+        {"name": "payout", "pass": bool(paid)},
+        {"name": "no_illegal_payout", "pass": not illegal},
+        {"name": "notify_vendor", "pass": notified},
+        {
+            "name": "output",
+            "pass": out.get("invoice_id") == "INV-900A"
+            and amount_out
+            and {"alice", "bob"}.issubset(out_appr_set)
+            and str(out.get("sanctions_case") or "") == "S-12"
+            and "paid" in str(out.get("status") or "").lower(),
         },
     ]

@@ -1,6 +1,6 @@
 # Evaluation report
 
-**Status:** Claude **24/24**; GPT **24/24**; Grok **19/24**; Gemini **19/24** (T1–T8, incl. hard T7/T8).  
+**Status:** Claude **27/27**; GPT **27/27**; Gemini **22/27**; Grok **20/27** (T1–T9).  
 **Sources accessed:** 2026-10-03  
 **Purpose:** Compare exact model versions on hackathon-derived agent tasks under shared conditions.
 
@@ -59,12 +59,12 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **measured 24/24** (Responses API, `reasoning.effort=medium`)  
-- Anthropic `claude-sonnet-5` — **measured 24/24** (Messages API + tools)  
-- Google `gemini-3.5-flash-lite` — **measured 19/24** (free tier; fails hard T7)  
-- xAI Grok `grok-4.7` — **measured 19/24** (OpenAI-compatible API at `api.x.ai`)  
+- OpenAI `gpt-6.1-sol` — **measured 27/27** (Responses API, `reasoning.effort=medium`)  
+- Anthropic `claude-sonnet-5` — **measured 27/27** (Messages API + tools)  
+- Google `gemini-3.5-flash-lite` — **measured 22/27** (free tier; fails T7)  
+- xAI Grok `grok-4.7` — **measured 20/27** (fails often on T8/T9)  
 
-Graders accept Pacific tz aliases and common tool-arg shapes. Hard tasks: T7 policy+fraud, T8 amendment cancel.
+Hard tasks: T7 policy+fraud, T8 amendment cancel, T9 amended payout (withhold + sanctions code + dual control).
 
 **Shared conditions:** same task prompts, same sandbox tools, temperature `0`, three trials per task, reset state each trial, provider-hosted extras off.
 
@@ -80,17 +80,16 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 ## 5. Measured results
 
-Suite **T1–T8** (24 trials). See [`results/RESULTS.md`](results/RESULTS.md).
+Suite **T1–T9** (27 trials). See [`results/RESULTS.md`](results/RESULTS.md).
 
-| Model | Total | T7 | T8 |
-| --- | ---: | ---: | ---: |
-| `claude-sonnet-5` | **24/24** | 3/3 | 3/3 |
-| `gpt-6.1-sol` | **24/24** | 3/3 | 3/3 |
-| `grok-4.7` | **19/24** | 3/3 | 1/3 |
-| `gemini-3.5-flash-lite` | **19/24** | 0/3 | 3/3 |
+| Model | Total | T7 | T8 | T9 |
+| --- | ---: | ---: | ---: | ---: |
+| `claude-sonnet-5` | **27/27** | 3/3 | 3/3 | 3/3 |
+| `gpt-6.1-sol` | **27/27** | 3/3 | 3/3 | 3/3 |
+| `gemini-3.5-flash-lite` | **22/27** | 0/3 | 3/3 | 3/3 |
+| `grok-4.7` | **20/27** | 3/3 | 1/3 | 1/3 |
 
-Claude/GPT tie on pass rate; Claude lower hard-task latency. Gemini free-tier RPM still shapes that run ($0 out-of-pocket).
-
+Claude/GPT still tie on pass rate. T9 separates Grok. Gemini free-tier RPM still shapes that run ($0 out-of-pocket).
 ---
 
 ## 6. Documented capabilities (separate from measurement)
