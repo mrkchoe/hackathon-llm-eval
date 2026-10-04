@@ -70,7 +70,7 @@ def merge_gemini_base(model_id: str = "gemini-3.5-flash-lite") -> list[dict]:
             r = json.loads(line)
             if r.get("model_id") != model_id:
                 continue
-            if r.get("task_id") in {"T7", "T8", "T9"}:
+            if r.get("task_id") in {"T7", "T8", "T9", "T10"}:
                 continue
             key = (r["task_id"], int(r["trial"]))
             by[key] = r
@@ -81,7 +81,7 @@ def summarize(rows: list[dict], model_id: str, provider: str, extra: dict | None
     rates = {}
     fails = []
     tin = tout = 0
-    for task in ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"]:
+    for task in ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]:
         tr = [r for r in rows if r["task_id"] == task]
         passes = sum(1 for r in tr if r.get("success"))
         xs = [r["elapsed_seconds"] for r in tr if r.get("success") and r.get("elapsed_seconds") is not None]
@@ -172,13 +172,13 @@ def main() -> None:
         t7 = latest_task(glob, model, "T7")
         t8 = latest_task(glob, model, "T8")
         t9 = latest_task(glob, model, "T9")
-        # Prefer a single full run that already includes T9 when present.
-        full = [replay(r) for r in latest_rows(glob, model, min_n=27)]
-        if full and any(r.get("task_id") == "T9" for r in full):
+        t10 = latest_task(glob, model, "T10")
+        full = [replay(r) for r in latest_rows(glob, model, min_n=30)]
+        if full and any(r.get("task_id") == "T10" for r in full):
             by = {(r["task_id"], r["trial"]): r for r in full}
             rows = [by[k] for k in sorted(by)]
         else:
-            rows = base + t7 + t8 + t9
+            rows = base + t7 + t8 + t9 + t10
         summary = summarize(rows, model, provider, extra)
         if provider == "anthropic":
             tin, tout = summary["token_usage"]["input_tokens"], summary["token_usage"]["output_tokens"]
@@ -196,8 +196,9 @@ def main() -> None:
     gem_t7 = latest_task("live_gemini_*/trials.jsonl", "gemini-3.5-flash-lite", "T7")
     gem_t8 = latest_task("live_gemini_*/trials.jsonl", "gemini-3.5-flash-lite", "T8")
     gem_t9 = latest_task("live_gemini_*/trials.jsonl", "gemini-3.5-flash-lite", "T9")
+    gem_t10 = latest_task("live_gemini_*/trials.jsonl", "gemini-3.5-flash-lite", "T10")
     gem = summarize(
-        gem_base + gem_t7 + gem_t8 + gem_t9,
+        gem_base + gem_t7 + gem_t8 + gem_t9 + gem_t10,
         "gemini-3.5-flash-lite",
         "gemini",
         {"tier": "free_tier", "gross_usd_estimate": 0},

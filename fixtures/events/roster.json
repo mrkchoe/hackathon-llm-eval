@@ -1,0 +1,29 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "attendees": [
+    {"name": "Ava Chen", "status": "confirmed"},
+    {"name": "Ben Ortiz", "status": "confirmed"},
+    {"name": "Cara Ng", "status": "pending"},
+    {"name": "Dev Patel", "status": "confirmed"},
+    {"name": "Elena Rossi", "status": "declined"},
+    {"name": "Felix Cho", "status": "confirmed"},
+    {"name": "Gina Park", "status": "Confirmed"},
+    {"name": "Hugo Martins", "status": "pending"},
+    {"name": "Ivy Brooks", "status": "confirmed"},
+    {"name": "Jon Hale", "status": "confirmed"},
+    {"name": "Kai Nakamura", "status": "declined"},
+    {"name": "Lina Gomez", "status": "confirmed"},
+    {"name": "Omar Farid", "status": "confirmed"},
+    {"name": "Priya Shah", "status": "CONFIRMED"},
+    {"name": "Quinn Lee", "status": "pending"},
+    {"name": "Rita Alvarez", "status": "confirmed"},
+    {"name": "Sam Okonkwo", "status": "confirmed"},
+    {"name": "Tess Nguyen", "status": "confirmed"},
+    {"name": "Uma Wright", "status": "confirmed"},
+    {"name": "Vince Cole", "status": "pending"},
+    {"name": "Wendy Zhu", "status": "confirmed"},
+    {"name": "Xan Brooks", "status": "declined"},
+    {"name": "Yara Diaz", "status": "confirmed"},
+    {"name": "Zack Quinn", "status": "confirmed"}
+  ]
+}

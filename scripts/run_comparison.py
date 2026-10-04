@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Minimal multi-trial LLM comparison runner for tasks T1–T9.
+Minimal multi-trial LLM comparison runner for tasks T1–T10.
 
 Does not fabricate live results. Without API keys, only --reference-check
 (validates fixtures/graders) is available — that is NOT a model comparison.
@@ -151,6 +151,34 @@ TASKS = {
         ],
         "vision": False,
         "max_turns": 16,
+    },
+    "T10": {
+        "file": "tasks/T10_saga_summit_booking.md",
+        "prompt": (
+            "Book the partner summit package under authoritative policy summit_v1. "
+            "Use only the provided tools. When finished return JSON "
+            "{room_id, headcount, total_usd, conf_code, auth_token, status}. "
+            "Tools: read_policy, get_meeting, list_rooms, read_roster, suggest_package, "
+            "book_room, book_catering, book_av, cancel_av, cancel_catering, cancel_room, "
+            "quick_book_suggested, finalize_package."
+        ),
+        "tools": [
+            "read_policy",
+            "get_meeting",
+            "list_rooms",
+            "read_roster",
+            "suggest_package",
+            "book_room",
+            "book_catering",
+            "book_av",
+            "cancel_av",
+            "cancel_catering",
+            "cancel_room",
+            "quick_book_suggested",
+            "finalize_package",
+        ],
+        "vision": False,
+        "max_turns": 20,
     },
 }
 
@@ -310,6 +338,29 @@ def reference_solver(task_id: str, sb: Sandbox) -> dict:
             "approvers": ["alice", "bob"],
             "sanctions_case": "S-12",
             "status": "paid",
+        }
+    if task_id == "T10":
+        sb.call("read_policy", {"policy_id": "summit_v1"})
+        sb.call("get_meeting", {})
+        sb.call("read_roster", {"page": 1})
+        sb.call("read_roster", {"page": 2})
+        sb.call("read_roster", {"page": 3})
+        sb.call("read_roster", {"page": 4})
+        sb.call("read_roster", {"page": 5})
+        sb.call("list_rooms", {})
+        booked = sb.call("book_room", {"room_id": "R-BLUE"})
+        conf = booked["result"]["conf_code"]
+        sb.call("book_catering", {"headcount": 15})
+        sb.call("book_av", {"conf_code": conf})
+        token = "RBLUE15" + conf[-3:]
+        sb.call("finalize_package", {"auth_token": token})
+        return {
+            "room_id": "R-BLUE",
+            "headcount": 15,
+            "total_usd": 2400.0,
+            "conf_code": conf,
+            "auth_token": token,
+            "status": "finalized",
         }
     raise ValueError(task_id)
 
@@ -659,7 +710,7 @@ def run_reference_check() -> int:
 
 
 def main() -> int:
-    p = argparse.ArgumentParser(description="Minimal LLM comparison runner (T1–T9)")
+    p = argparse.ArgumentParser(description="Minimal LLM comparison runner (T1–T10)")
     p.add_argument("--reference-check", action="store_true", help="Validate fixtures/graders only")
     p.add_argument("--provider", choices=["openai", "anthropic", "gemini", "grok"])
     p.add_argument("--model", help="Exact model ID (defaults per provider)")

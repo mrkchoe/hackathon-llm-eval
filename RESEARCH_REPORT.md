@@ -1,6 +1,6 @@
 # Evaluation report
 
-**Status:** Claude **27/27**; GPT **27/27**; Gemini **22/27**; Grok **20/27** (T1–T9).  
+**Status:** Claude **30/30**; GPT **30/30**; Gemini **22/30**; Grok **20/30** (T1–T10).  
 **Sources accessed:** 2026-10-03  
 **Purpose:** Compare exact model versions on hackathon-derived agent tasks under shared conditions.
 
@@ -38,7 +38,7 @@ Full cards: [`sources/registry.yaml`](sources/registry.yaml), [`sources/sponsor_
 
 ---
 
-## 3. Nine concrete tasks
+## 3. Ten concrete tasks
 
 Published under [`tasks/`](tasks/) with inputs and explicit success criteria.
 
@@ -53,6 +53,7 @@ Published under [`tasks/`](tasks/) with inputs and explicit success criteria.
 | **T7** | Policy-gated remediation | TiDB / support workflow | Policy follow, fraud gate |
 | **T8** | Amendment cancellation | Composio-style revisions | Prefer latest instruction; refuse stale create |
 | **T9** | Dual-control amended payout | Agentic approval / Temporal-style | Amendment, sanctions, withhold, dual control |
+| **T10** | Saga summit booking | Cal Hacks Temporal/durable workflow | Paginated count, budget, saga, auth token |
 
 Each task is an **adaptation** with synthetic fixtures. Passing a task does not prove live sponsor-product usage.
 
@@ -62,12 +63,12 @@ Each task is an **adaptation** with synthetic fixtures. Passing a task does not 
 
 **Candidates (exact IDs):**
 
-- OpenAI `gpt-6.1-sol` — **measured 27/27** (Responses API, `reasoning.effort=medium`)  
-- Anthropic `claude-sonnet-5` — **measured 27/27** (Messages API + tools)  
-- Google `gemini-3.5-flash-lite` — **measured 22/27** (free tier; fails T7)  
-- xAI Grok `grok-4.7` — **measured 20/27** (fails often on T8/T9)  
+- OpenAI `gpt-6.1-sol` — **measured 30/30** (Responses API, `reasoning.effort=medium`)  
+- Anthropic `claude-sonnet-5` — **measured 30/30** (Messages API + tools)  
+- Google `gemini-3.5-flash-lite` — **measured 22/30** (free tier; fails T7/T10)  
+- xAI Grok `grok-4.7` — **measured 20/30** (fails T8/T9/T10 often)  
 
-Hard tasks: T7 policy+fraud, T8 amendment cancel, T9 amended payout (withhold + sanctions code + dual control).
+Hard tasks: T7–T9 compliance; **T10** extreme saga (still cleared by Claude and GPT).
 
 **Shared conditions:** same task prompts, same sandbox tools, temperature `0`, three trials per task, reset state each trial, provider-hosted extras off.
 
@@ -83,16 +84,16 @@ python scripts/run_comparison.py --provider <openai|anthropic|gemini|grok> --tri
 
 ## 5. Measured results
 
-Suite **T1–T9** (27 trials). See [`results/RESULTS.md`](results/RESULTS.md).
+Suite **T1–T10** (30 trials). See [`results/RESULTS.md`](results/RESULTS.md).
 
-| Model | Total | T7 | T8 | T9 |
-| --- | ---: | ---: | ---: | ---: |
-| `claude-sonnet-5` | **27/27** | 3/3 | 3/3 | 3/3 |
-| `gpt-6.1-sol` | **27/27** | 3/3 | 3/3 | 3/3 |
-| `gemini-3.5-flash-lite` | **22/27** | 0/3 | 3/3 | 3/3 |
-| `grok-4.7` | **20/27** | 3/3 | 1/3 | 1/3 |
+| Model | Total | T10 |
+| --- | ---: | ---: |
+| `claude-sonnet-5` | **30/30** | 3/3 |
+| `gpt-6.1-sol` | **30/30** | 3/3 |
+| `gemini-3.5-flash-lite` | **22/30** | 0/3 |
+| `grok-4.7` | **20/30** | 0/3 |
 
-Claude/GPT still tie on pass rate. T9 separates Grok. Gemini free-tier RPM still shapes that run ($0 out-of-pocket).
+Claude/GPT still tie on pass rate. T10 separates Grok/Gemini.
 ---
 
 ## 6. Documented capabilities (separate from measurement)
@@ -137,7 +138,7 @@ Copy `.env.example` → `.env`. Without keys, the runner refuses live mode rathe
 
 ## 9. Limitations
 
-- Small pilot (9 tasks × 3 trials). Small gaps are not overall superiority.  
+- Small pilot (10 tasks × 3 trials). Small gaps are not overall superiority.  
 - Adaptations ≠ official contest tests.  
 - Participant-reported metrics are unverified.  
 - Sandbox tools ≠ proof of sponsor-stack integration.  

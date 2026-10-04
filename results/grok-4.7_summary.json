@@ -57,10 +57,16 @@
       "trials": 3,
       "rate": 0.3333333333333333,
       "mean_latency_s": 17.83
+    },
+    "T10": {
+      "passes": 0,
+      "trials": 3,
+      "rate": 0.0,
+      "mean_latency_s": null
     }
   },
   "total_passes": 20,
-  "total_trials": 27,
+  "total_trials": 30,
   "failures": [
     {
       "task_id": "T2",
@@ -164,16 +170,72 @@
         "output"
       ],
       "output": {}
+    },
+    {
+      "task_id": "T10",
+      "trial": 1,
+      "class": "max_turns",
+      "detail": "max_turns",
+      "failed_checks": [
+        "room",
+        "headcount",
+        "av",
+        "finalized",
+        "output"
+      ],
+      "output": {}
+    },
+    {
+      "task_id": "T10",
+      "trial": 2,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "room",
+        "headcount",
+        "av",
+        "finalized",
+        "output"
+      ],
+      "output": {
+        "room_id": null,
+        "headcount": 15,
+        "total_usd": null,
+        "conf_code": null,
+        "auth_token": null,
+        "status": "failed"
+      }
+    },
+    {
+      "task_id": "T10",
+      "trial": 3,
+      "class": "incorrect_output",
+      "detail": null,
+      "failed_checks": [
+        "room",
+        "headcount",
+        "av",
+        "finalized",
+        "output"
+      ],
+      "output": {
+        "room_id": null,
+        "headcount": 15,
+        "total_usd": null,
+        "conf_code": null,
+        "auth_token": null,
+        "status": "failed"
+      }
     }
   ],
   "token_usage": {
-    "input_tokens": 350093,
-    "output_tokens": 4473
+    "input_tokens": 440495,
+    "output_tokens": 5078
   },
   "settings": {
     "api": "openai_compatible",
     "base_url": "https://api.x.ai/v1"
   },
   "pricing_status": "estimate_$2_in_$6_out_per_MTok",
-  "gross_usd_estimate": 0.727024
+  "gross_usd_estimate": 0.911458
 }

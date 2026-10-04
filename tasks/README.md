@@ -1,8 +1,8 @@
 # Tasks
 
-Nine problems we give every model. Each file has:
+Ten problems we give every model. Each file has:
 
-1. What the model should do (plain input)
+1. What the model should do
 2. Which tools it may use
 3. What counts as a pass
 

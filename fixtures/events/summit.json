@@ -1,0 +1,40 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "meeting": {
+    "title": "Partner summit",
+    "invite_headcount": 20,
+    "budget_usd": 2400,
+    "notes": "Invite list is aspirational. Do not use invite_headcount for catering."
+  },
+  "rooms": [
+    {
+      "room_id": "R-GOLD",
+      "capacity": 50,
+      "cost_usd": 2000,
+      "av_hookup": true,
+      "label": "Grand ballroom (suggested)"
+    },
+    {
+      "room_id": "R-BLUE",
+      "capacity": 20,
+      "cost_usd": 900,
+      "av_hookup": true,
+      "label": "Blue conference"
+    },
+    {
+      "room_id": "R-RED",
+      "capacity": 8,
+      "cost_usd": 400,
+      "av_hookup": false,
+      "label": "Red huddle"
+    }
+  ],
+  "catering_usd_per_person": 80,
+  "av_fee_usd": 300,
+  "suggested_package": {
+    "room_id": "R-GOLD",
+    "headcount": 20,
+    "include_av": true,
+    "pitch": "Best experience for the full invite list."
+  }
+}

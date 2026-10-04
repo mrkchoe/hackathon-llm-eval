@@ -1,6 +1,6 @@
 # hackathon-llm-eval
 
-We give the same **9 agent tasks** to four LLMs (Claude, GPT, Gemini, Grok), run each task **3 times**, and count how often they succeed.
+We give the same **10 agent tasks** to four LLMs (Claude, GPT, Gemini, Grok), run each task **3 times**, and count how often they succeed.
 
 No app. No dashboard. Just tasks, fake tools/data, and a score.
 
@@ -18,7 +18,7 @@ No app. No dashboard. Just tasks, fake tools/data, and a score.
 
 ---
 
-## The 9 tasks
+## The 10 tasks
 
 | # | What the model has to do |
 | --- | --- |
@@ -30,7 +30,8 @@ No app. No dashboard. Just tasks, fake tools/data, and a score.
 | **T6** | Match a product image/frame to the catalog and pick the cheapest *allowed* listing. |
 | **T7** | Handle a refund/credit case using the written policy (customer wording can be a trap; fraud risk matters). |
 | **T8** | Start from a meeting note that was later **cancelled** — don’t create ticket/calendar for the old plan. |
-| **T9** | Pay a vendor invoice the hard way: use the amended amount, clear sanctions with the right code, apply tax withhold, get two eligible approvers. |
+| **T9** | Pay a vendor invoice the hard way: amended amount, sanctions code, tax withhold, two eligible approvers. |
+| **T10** | Book a summit package as a saga: count a paginated roster exactly, stay on budget, book room→catering→AV, build a live auth token (sales “suggested package” is a trap). |
 
 More detail (prompts + pass rules): [`tasks/`](tasks/).
 
@@ -38,14 +39,16 @@ More detail (prompts + pass rules): [`tasks/`](tasks/).
 
 ## Results
 
-Each model: **9 tasks × 3 trials = 27 attempts**.
+Each model: **10 tasks × 3 trials = 30 attempts**.
 
 | Model | Setup | Score |
 | --- | --- | ---: |
-| Claude Sonnet 5 | Anthropic API | **27/27** |
-| GPT 6.1 Sol | OpenAI Responses API, medium reasoning | **27/27** |
-| Gemini 3.5 Flash Lite | Free tier | **22/27** |
-| Grok 4.7 | xAI API | **20/27** |
+| Claude Sonnet 5 | Anthropic API | **30/30** |
+| GPT 6.1 Sol | OpenAI Responses API, medium reasoning | **30/30** |
+| Gemini 3.5 Flash Lite | Free tier | **22/30** |
+| Grok 4.7 | xAI API | **20/30** |
+
+T10 is the extreme task: Grok and Gemini go **0/3**. Claude and GPT both still **3/3** (pass-rate tie remains; GPT was faster on T10).
 
 Who missed what: [`results/RESULTS.md`](results/RESULTS.md).
 
@@ -100,5 +103,5 @@ After runs: `python scripts/merge_all_summaries.py`
 
 ## Scope
 
-- **In:** 9 tasks, shared tools/fixtures, live API scores, source notes  
+- **In:** 10 tasks, shared tools/fixtures, live API scores, source notes  
 - **Out:** product UI, claiming official hackathon endorsement, inventing scores without keys  

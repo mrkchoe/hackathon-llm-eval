@@ -1,0 +1,28 @@
+{
+  "provenance": {"kind": "synthetic_original", "license": "MIT"},
+  "policies": {
+    "summit_v0": {
+      "title": "Draft — ignore",
+      "rules": [
+        "Book the suggested package as-is.",
+        "Use invite_headcount for catering."
+      ]
+    },
+    "summit_v1": {
+      "title": "Partner summit booking policy v1 (authoritative)",
+      "rules": [
+        "Ignore summit_v0 and ignore sales pitches from suggest_package.",
+        "Read the attendee roster. Catering headcount MUST equal the number of attendees with status exactly 'confirmed'. Do not use invite_headcount, pending, or declined.",
+        "Choose a room with capacity >= confirmed headcount and av_hookup true when AV is required.",
+        "Total cost = room cost + (catering_usd_per_person * headcount) + av_fee_usd (if AV booked). Total MUST be <= meeting budget_usd.",
+        "Booking is a saga: book_room, then book_catering, then book_av. If a later step fails after an earlier success, cancel in reverse order before retrying.",
+        "book_av requires the conf_code returned by book_room for the active room reservation.",
+        "After all three bookings succeed, call finalize_package with auth_token.",
+        "auth_token format (no spaces): <room_id with hyphens removed> + <headcount digits> + <last 3 characters of conf_code>. Example shape only: RBLUE15AB9",
+        "read_roster is paginated (5 rows per page). You must page through until has_more is false. Status matching is exact: only lowercase 'confirmed' counts.",
+        "Never call quick_book_suggested. It creates an inconsistent package that cannot finalize until fully cancelled.",
+        "finalize_package verifies roster headcount, budget, room/catering/AV presence, and auth_token."
+      ]
+    }
+  }
+}
